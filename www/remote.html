@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Teleprompter Remote</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // remote.html lives at /{slug}/remote — strip trailing /remote to get API_BASE
+        window.API_BASE = window.location.pathname.replace(/\/remote\/?$/, '') || '';
+        const translations = {
+            fr: {
+                page_title: 'Télécommande',
+                remote_control: 'Télécommande',
+                play: 'Lecture',
+                pause: 'Pause',
+                reset: 'Début',
+                connected: 'Connecté',
+                disconnected: 'Déconnecté',
+                connecting: 'Connexion...',
+                edit_text: 'Modifier le texte',
+                settings: 'Paramètres',
+                save: 'Enregistrer',
+                cancel: 'Annuler',
+                clear: 'Effacer',
+                paste_placeholder: 'Collez votre script ici...',
+                font_size: 'Taille de police',
+                scroll_speed: 'Vitesse de défilement',
+                scroll_step: 'Pas des flèches',
+                left_margin: 'Marge gauche',
+                right_margin: 'Marge droite',
+                font_contrast: 'Contraste',
+                close: 'Fermer',
+                edit: 'Texte',
+                back: 'Retour',
+                skip: 'Avancer',
+                reset_defaults: 'Réinitialiser'
+            },
+            en: {
+                page_title: 'Remote Control',
+                remote_control: 'Remote Control',
+                play: 'Play',
+                pause: 'Pause',
+                reset: 'Reset',
+                connected: 'Connected',
+                disconnected: 'Disconnected',
+                connecting: 'Connecting...',
+                edit_text: 'Edit Text',
+                settings: 'Settings',
+                save: 'Save',
+                cancel: 'Cancel',
+                clear: 'Clear',
+                paste_placeholder: 'Paste your script here...',
+                font_size: 'Font Size',
+                scroll_speed: 'Scroll Speed',
+                scroll_step: 'Arrow Step',
+                left_margin: 'Left Margin',
+                right_margin: 'Right Margin',
+                font_contrast: 'Contrast',
+                close: 'Close',
+                edit: 'Text',
+                back: 'Back',
+                skip: 'Skip',
+                reset_defaults: 'Reset to Defaults'
+            }
+        };
+
+        let currentLang = 'fr';
+        function t(key) {
+            return translations[currentLang][key] || translations['en'][key] || key;
+        }
+
+        function getInitialLanguage() {
+            const params = new URLSearchParams(window.location.search);
+            const urlLang = params.get('lang');
+            if (urlLang && translations[urlLang]) return urlLang;
+            const storedLang = localStorage.getItem('teleprompter_language');
+            if (storedLang && translations[storedLang]) return storedLang;
+            return 'fr';
+        }
+
+        currentLang = getInitialLanguage();
+        document.title = translations[currentLang].page_title;
+    </script>
+    <style>
+        :root {
+            --bg-deep: #000000;
+            --bg-surface: #0d0d0d;
+            --bg-elevated: #171717;
+            --bg-hover: #1f1f1f;
+            --bg-active: #262626;
+            --text-primary: #fafafa;
+            --text-secondary: #a3a3a3;
+            --text-muted: #525252;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-medium: rgba(255, 255, 255, 0.12);
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
+            --font-ui: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --transition-fast: 150ms ease-out;
+            --transition-normal: 200ms ease-out;
+            --transition-slow: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+            --btn-height: 56px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            overflow: hidden;
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .remote-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            height: 100dvh;
+            padding: 16px;
+            padding-top: max(16px, env(safe-area-inset-top));
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
+        }
+
+        /* Header */
+        .remote-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0 12px;
+        }
+
+        .remote-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .connection-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            background: var(--bg-elevated);
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 500;
+        }
+
+        .connection-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            transition: background var(--transition-normal);
+        }
+
+        .connection-badge.connected .connection-dot {
+            background: var(--accent-green);
+            animation: pulse 2s infinite;
+        }
+
+        .pedal-badge {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7em;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+        .pedal-badge.active { display: flex; }
+        .pedal-badge.reverse { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Main Play Button */
+        .main-control {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            min-height: 0;
+            padding: 16px 0;
+        }
+
+        .play-button {
+            width: 140px;
+            height: 140px;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: var(--bg-elevated);
+            border: 2px solid var(--border-medium);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            flex-shrink: 0;
+        }
+
+        .play-button:active {
+            transform: scale(0.95);
+            background: var(--bg-active);
+        }
+
+        .play-button.playing {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 40px rgba(34, 197, 94, 0.2);
+        }
+
+        .play-button svg {
+            width: 50%;
+            height: 50%;
+        }
+
+        .play-label {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        /* Controls Grid */
+        .controls-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Scroll Buttons */
+        .scroll-control {
+            display: flex;
+            gap: 10px;
+        }
+
+        .scroll-btn {
+            flex: 1;
+            height: var(--btn-height);
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        .scroll-btn:active {
+            background: var(--bg-active);
+            transform: scale(0.97);
+        }
+
+        .scroll-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .scroll-btn span {
+            font-size: 0.7em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Action Buttons Row */
+        .action-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            height: var(--btn-height);
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:active {
+            background: var(--bg-active);
+            transform: scale(0.97);
+        }
+
+        .action-btn svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 200;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-normal), visibility var(--transition-normal);
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-height: 90vh;
+            max-height: 90dvh;
+            background: var(--bg-surface);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform var(--transition-slow);
+        }
+
+        .modal-overlay.visible .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .modal-header h2 {
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-elevated);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 1.4em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:active {
+            background: var(--bg-active);
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px;
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
+        }
+
+        /* Edit Modal */
+        .edit-textarea {
+            width: 100%;
+            min-height: 200px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            font-size: 1em;
+            padding: 14px;
+            resize: vertical;
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        .edit-textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .edit-btn {
+            flex: 1;
+            height: 50px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: var(--font-ui);
+            font-size: 0.95em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .edit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .edit-btn.primary {
+            background: var(--text-primary);
+            color: var(--bg-deep);
+        }
+
+        .edit-btn.secondary {
+            background: var(--bg-elevated);
+            color: var(--text-secondary);
+        }
+
+        .edit-btn.danger {
+            background: var(--bg-elevated);
+            color: var(--accent-red);
+        }
+
+        /* Settings Panel */
+        .settings-group {
+            margin-bottom: 20px;
+        }
+
+        .settings-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .settings-label span:first-child {
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .settings-label span:last-child {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .settings-slider {
+            width: 100%;
+            height: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--bg-elevated);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .settings-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--text-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .settings-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: var(--text-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Landscape */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .remote-container {
+                padding: 10px;
+            }
+
+            .remote-header {
+                padding: 4px 0 8px;
+            }
+
+            .main-control {
+                flex-direction: row;
+                gap: 20px;
+                padding: 8px 0;
+            }
+
+            .play-button {
+                width: 100px;
+                height: 100px;
+            }
+
+            .play-label {
+                display: none;
+            }
+
+            .controls-grid {
+                flex: 1;
+            }
+
+            .scroll-btn {
+                height: 50px;
+            }
+
+            .action-btn {
+                height: 50px;
+            }
+        }
+
+        @media (min-height: 700px) {
+            .play-button {
+                width: 160px;
+                height: 160px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="remote-container">
+        <header class="remote-header">
+            <span class="remote-title" data-i18n="remote_control">Remote Control</span>
+            <div class="pedal-badge" id="pedal-badge">
+                <span id="pedal-badge-text">Pedal</span>
+            </div>
+            <div class="connection-badge" id="connection-badge">
+                <span class="connection-dot"></span>
+                <span id="connection-text" data-i18n="disconnected">Disconnected</span>
+            </div>
+        </header>
+
+        <div class="main-control">
+            <button class="play-button" id="play-btn" aria-label="Play/Pause">
+                <svg id="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+            </button>
+            <span class="play-label" id="play-label" data-i18n="play">Play</span>
+        </div>
+
+        <div class="controls-grid">
+            <div class="scroll-control">
+                <button class="scroll-btn" id="scroll-up" aria-label="Scroll up">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 15l-6-6-6 6"/>
+                    </svg>
+                    <span data-i18n="back">Back</span>
+                </button>
+                <button class="scroll-btn" id="scroll-down" aria-label="Scroll down">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                    <span data-i18n="skip">Skip</span>
+                </button>
+            </div>
+
+            <div class="action-row">
+                <button class="action-btn" id="reset-btn" aria-label="Reset">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                        <path d="M3 3v5h5"/>
+                    </svg>
+                </button>
+                <button class="action-btn" id="edit-btn" aria-label="Edit text">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                </button>
+                <button class="action-btn" id="settings-btn" aria-label="Settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal-overlay" id="edit-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-i18n="edit_text">Edit Text</h2>
+                <button class="modal-close" id="edit-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <textarea class="edit-textarea" id="edit-textarea" data-i18n-placeholder="paste_placeholder" placeholder="Paste your script here..."></textarea>
+                <div class="edit-actions">
+                    <button class="edit-btn danger" id="edit-clear" data-i18n="clear">Clear</button>
+                    <button class="edit-btn secondary" id="edit-cancel" data-i18n="cancel">Cancel</button>
+                    <button class="edit-btn primary" id="edit-save" data-i18n="save">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-i18n="settings">Settings</h2>
+                <button class="modal-close" id="settings-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-group">
+                    <div class="settings-label">
+                        <span data-i18n="font_size">Font Size</span>
+                        <span id="font-size-value">48px</span>
+                    </div>
+                    <input type="range" class="settings-slider" id="font-size-slider" min="12" max="200" value="48">
+                </div>
+
+                <div class="settings-group">
+                    <div class="settings-label">
+                        <span data-i18n="scroll_speed">Scroll Speed</span>
+                        <span id="scroll-speed-value">50 px/s</span>
+                    </div>
+                    <input type="range" class="settings-slider" id="scroll-speed-slider" min="5" max="500" value="50">
+                </div>
+
+                <div class="settings-group">
+                    <div class="settings-label">
+                        <span data-i18n="scroll_step">Arrow Step</span>
+                        <span id="scroll-step-value">100 px</span>
+                    </div>
+                    <input type="range" class="settings-slider" id="scroll-step-slider" min="20" max="500" value="100">
+                </div>
+
+                <div class="settings-group">
+                    <div class="settings-label">
+                        <span data-i18n="left_margin">Left Margin</span>
+                        <span id="left-margin-value">10%</span>
+                    </div>
+                    <input type="range" class="settings-slider" id="left-margin-slider" min="0" max="45" value="10">
+                </div>
+
+                <div class="settings-group">
+                    <div class="settings-label">
+                        <span data-i18n="right_margin">Right Margin</span>
+                        <span id="right-margin-value">10%</span>
+                    </div>
+                    <input type="range" class="settings-slider" id="right-margin-slider" min="0" max="45" value="10">
+                </div>
+
+                <div class="settings-group">
+                    <div class="settings-label">
+                        <span data-i18n="font_contrast">Contrast</span>
+                        <span id="font-contrast-value">100%</span>
+                    </div>
+                    <input type="range" class="settings-slider" id="font-contrast-slider" min="30" max="100" value="100">
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 16px;">
+                    <button class="edit-btn danger" id="reset-defaults" style="flex: 1;" data-i18n="reset_defaults">Reset to Defaults</button>
+                    <button class="edit-btn secondary" id="settings-done" style="flex: 1;" data-i18n="close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        const state = {
+            is_playing: false,
+            scroll_position: 0,
+            pedal_value: 0,
+            text: '',
+            settings: {
+                font_size: 48,
+                scroll_speed: 50,
+                scroll_step: 100,
+                margin_left: 10,
+                margin_right: 10,
+                font_contrast: 100
+            }
+        };
+
+        // Elements
+        const elements = {
+            playBtn: document.getElementById('play-btn'),
+            playIcon: document.getElementById('play-icon'),
+            playLabel: document.getElementById('play-label'),
+            connectionBadge: document.getElementById('connection-badge'),
+            connectionText: document.getElementById('connection-text'),
+            // Edit modal
+            editModal: document.getElementById('edit-modal'),
+            editTextarea: document.getElementById('edit-textarea'),
+            // Settings modal
+            settingsModal: document.getElementById('settings-modal'),
+            fontSizeSlider: document.getElementById('font-size-slider'),
+            fontSizeValue: document.getElementById('font-size-value'),
+            scrollSpeedSlider: document.getElementById('scroll-speed-slider'),
+            scrollSpeedValue: document.getElementById('scroll-speed-value'),
+            scrollStepSlider: document.getElementById('scroll-step-slider'),
+            scrollStepValue: document.getElementById('scroll-step-value'),
+            leftMarginSlider: document.getElementById('left-margin-slider'),
+            leftMarginValue: document.getElementById('left-margin-value'),
+            rightMarginSlider: document.getElementById('right-margin-slider'),
+            rightMarginValue: document.getElementById('right-margin-value'),
+            fontContrastSlider: document.getElementById('font-contrast-slider'),
+            fontContrastValue: document.getElementById('font-contrast-value')
+        };
+
+        // SVG paths
+        const PLAY_PATH = 'M8 5v14l11-7z';
+        const PAUSE_PATH = 'M6 4h4v16H6V4zm8 0h4v16h-4V4z';
+
+        // SSE Client
+        const client = {
+            eventSource: null,
+            reconnectTimeout: null,
+            reconnectDelay: 1000,
+
+            connect() {
+                if (this.eventSource) {
+                    this.eventSource.close();
+                }
+
+                this.updateConnectionStatus('connecting');
+                this.eventSource = new EventSource(window.API_BASE + '/events');
+
+                this.eventSource.onopen = () => {
+                    this.reconnectDelay = 1000;
+                    this.updateConnectionStatus('connected');
+                };
+
+                this.eventSource.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        this.handleMessage(data);
+                    } catch (e) {
+                        console.error('Failed to parse SSE message:', e);
+                    }
+                };
+
+                this.eventSource.onerror = () => {
+                    this.eventSource.close();
+                    this.updateConnectionStatus('disconnected');
+                    this.scheduleReconnect();
+                };
+            },
+
+            scheduleReconnect() {
+                if (this.reconnectTimeout) {
+                    clearTimeout(this.reconnectTimeout);
+                }
+                this.reconnectTimeout = setTimeout(() => {
+                    this.reconnectDelay = Math.min(this.reconnectDelay * 1.5, 10000);
+                    this.connect();
+                }, this.reconnectDelay);
+            },
+
+            updateConnectionStatus(status) {
+                elements.connectionBadge.classList.remove('connected', 'disconnected');
+
+                if (status === 'connected') {
+                    elements.connectionBadge.classList.add('connected');
+                    elements.connectionText.textContent = t('connected');
+                } else if (status === 'connecting') {
+                    elements.connectionText.textContent = t('connecting');
+                } else {
+                    elements.connectionBadge.classList.add('disconnected');
+                    elements.connectionText.textContent = t('disconnected');
+                }
+            },
+
+            handleMessage(data) {
+                switch (data.type) {
+                    case 'state':
+                        state.is_playing = data.is_playing;
+                        state.scroll_position = data.scroll_position;
+                        state.pedal_value = data.pedal_value || 0;
+                        state.text = data.text || '';
+                        if (data.settings) {
+                            Object.assign(state.settings, data.settings);
+                        }
+                        updateUI();
+                        break;
+
+                    case 'control':
+                        state.is_playing = data.is_playing;
+                        if (data.pedal_value !== undefined) {
+                            state.pedal_value = data.pedal_value;
+                        }
+                        if (data.scroll_position !== undefined) {
+                            state.scroll_position = data.scroll_position;
+                        }
+                        updatePlayState();
+                        break;
+
+                    case 'text':
+                        state.text = data.text || '';
+                        break;
+
+                    case 'settings':
+                        if (data.settings) {
+                            Object.assign(state.settings, data.settings);
+                        }
+                        updateSettingsUI();
+                        break;
+                }
+            },
+
+            sendControl(action, delta = null, position = null) {
+                const body = { action };
+                if (delta !== null) body.delta = delta;
+                if (position !== null) body.position = position;
+
+                fetch(window.API_BASE + '/control', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                }).catch(err => console.error('Control error:', err));
+            },
+
+            sendSettings(settings) {
+                fetch(window.API_BASE + '/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settings)
+                }).catch(err => console.error('Settings error:', err));
+            },
+
+            sendText(text) {
+                fetch(window.API_BASE + '/text', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                }).catch(err => console.error('Text error:', err));
+            },
+
+            clearText() {
+                fetch(window.API_BASE + '/text', {
+                    method: 'DELETE'
+                }).catch(err => console.error('Clear text error:', err));
+            }
+        };
+
+        // UI Updates
+        function updateUI() {
+            updatePlayState();
+            updateSettingsUI();
+        }
+
+        function updatePlayState() {
+            elements.playBtn.classList.toggle('playing', state.is_playing);
+            elements.playIcon.innerHTML = `<path d="${state.is_playing ? PAUSE_PATH : PLAY_PATH}"/>`;
+            elements.playLabel.textContent = t(state.is_playing ? 'pause' : 'play');
+
+            // Pedal badge
+            const badge = document.getElementById('pedal-badge');
+            if (badge) {
+                const active = state.pedal_value !== 0;
+                badge.classList.toggle('active', active);
+                badge.classList.toggle('reverse', state.pedal_value < 0);
+                document.getElementById('pedal-badge-text').textContent =
+                    active ? (state.pedal_value > 0 ? 'Pedal \u25B6' : 'Pedal \u25C0') : 'Pedal';
+            }
+        }
+
+        function updateSettingsUI() {
+            const s = state.settings;
+            elements.fontSizeSlider.value = s.font_size;
+            elements.fontSizeValue.textContent = `${s.font_size}px`;
+            elements.scrollSpeedSlider.value = s.scroll_speed;
+            elements.scrollSpeedValue.textContent = `${s.scroll_speed} px/s`;
+            elements.scrollStepSlider.value = s.scroll_step;
+            elements.scrollStepValue.textContent = `${s.scroll_step} px`;
+            elements.leftMarginSlider.value = s.margin_left;
+            elements.leftMarginValue.textContent = `${s.margin_left}%`;
+            elements.rightMarginSlider.value = s.margin_right;
+            elements.rightMarginValue.textContent = `${s.margin_right}%`;
+            elements.fontContrastSlider.value = s.font_contrast;
+            elements.fontContrastValue.textContent = `${s.font_contrast}%`;
+        }
+
+        // Control Actions
+        function togglePlay() {
+            state.is_playing = !state.is_playing;
+            updatePlayState();
+            client.sendControl(state.is_playing ? 'play' : 'pause');
+        }
+
+        function scrollBump(direction) {
+            const delta = direction * state.settings.scroll_step;
+            client.sendControl('scroll', delta);
+        }
+
+        function resetScroll() {
+            state.is_playing = false;
+            updatePlayState();
+            client.sendControl('reset');
+        }
+
+        // Edit Modal
+        function openEditModal() {
+            elements.editTextarea.value = state.text.replace(/<[^>]*>/g, '');
+            elements.editModal.classList.add('visible');
+        }
+
+        function closeEditModal() {
+            elements.editModal.classList.remove('visible');
+        }
+
+        function saveText() {
+            const text = elements.editTextarea.value;
+            state.text = text;
+            client.sendText(text);
+            closeEditModal();
+        }
+
+        function clearText() {
+            elements.editTextarea.value = '';
+            state.text = '';
+            client.clearText();
+            closeEditModal();
+        }
+
+        // Settings Modal
+        function openSettingsModal() {
+            updateSettingsUI();
+            elements.settingsModal.classList.add('visible');
+        }
+
+        function closeSettingsModal() {
+            elements.settingsModal.classList.remove('visible');
+        }
+
+        function resetDefaults() {
+            const defaults = {
+                font_size: 48,
+                scroll_speed: 50,
+                scroll_step: 100,
+                margin_left: 10,
+                margin_right: 10,
+                font_contrast: 100
+            };
+            Object.assign(state.settings, defaults);
+            updateSettingsUI();
+            client.sendSettings(defaults);
+        }
+
+        // Translations
+        function applyTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = t(key);
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                el.placeholder = t(key);
+            });
+        }
+
+        // Event Listeners
+        elements.playBtn.addEventListener('click', togglePlay);
+
+        document.getElementById('scroll-up').addEventListener('click', () => scrollBump(-1));
+        document.getElementById('scroll-down').addEventListener('click', () => scrollBump(1));
+
+        document.getElementById('reset-btn').addEventListener('click', resetScroll);
+
+        // Edit modal
+        document.getElementById('edit-btn').addEventListener('click', openEditModal);
+        document.getElementById('edit-close').addEventListener('click', closeEditModal);
+        document.getElementById('edit-cancel').addEventListener('click', closeEditModal);
+        document.getElementById('edit-save').addEventListener('click', saveText);
+        document.getElementById('edit-clear').addEventListener('click', clearText);
+
+        // Settings modal
+        document.getElementById('settings-btn').addEventListener('click', openSettingsModal);
+        document.getElementById('settings-close').addEventListener('click', closeSettingsModal);
+        document.getElementById('settings-done').addEventListener('click', closeSettingsModal);
+        document.getElementById('reset-defaults').addEventListener('click', resetDefaults);
+
+        // Settings sliders
+        elements.fontSizeSlider.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            state.settings.font_size = value;
+            elements.fontSizeValue.textContent = `${value}px`;
+        });
+        elements.fontSizeSlider.addEventListener('change', (e) => {
+            client.sendSettings({ font_size: parseInt(e.target.value) });
+        });
+
+        elements.scrollSpeedSlider.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            state.settings.scroll_speed = value;
+            elements.scrollSpeedValue.textContent = `${value} px/s`;
+        });
+        elements.scrollSpeedSlider.addEventListener('change', (e) => {
+            client.sendSettings({ scroll_speed: parseInt(e.target.value) });
+        });
+
+        elements.scrollStepSlider.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            state.settings.scroll_step = value;
+            elements.scrollStepValue.textContent = `${value} px`;
+        });
+        elements.scrollStepSlider.addEventListener('change', (e) => {
+            client.sendSettings({ scroll_step: parseInt(e.target.value) });
+        });
+
+        elements.leftMarginSlider.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            state.settings.margin_left = value;
+            elements.leftMarginValue.textContent = `${value}%`;
+        });
+        elements.leftMarginSlider.addEventListener('change', (e) => {
+            client.sendSettings({ margin_left: parseInt(e.target.value) });
+        });
+
+        elements.rightMarginSlider.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            state.settings.margin_right = value;
+            elements.rightMarginValue.textContent = `${value}%`;
+        });
+        elements.rightMarginSlider.addEventListener('change', (e) => {
+            client.sendSettings({ margin_right: parseInt(e.target.value) });
+        });
+
+        elements.fontContrastSlider.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            state.settings.font_contrast = value;
+            elements.fontContrastValue.textContent = `${value}%`;
+        });
+        elements.fontContrastSlider.addEventListener('change', (e) => {
+            client.sendSettings({ font_contrast: parseInt(e.target.value) });
+        });
+
+        // Close modals on backdrop click
+        elements.editModal.addEventListener('click', (e) => {
+            if (e.target === elements.editModal) closeEditModal();
+        });
+        elements.settingsModal.addEventListener('click', (e) => {
+            if (e.target === elements.settingsModal) closeSettingsModal();
+        });
+
+        // Prevent double-tap zoom on iOS
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, { passive: false });
+
+        // Initialize
+        function init() {
+            applyTranslations();
+            client.connect();
+        }
+
+        init();
+    </script>
+</body>
+</html>

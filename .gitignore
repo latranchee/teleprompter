@@ -1,0 +1,11 @@
+# Bundled at runtime — see README. Source: https://github.com/latranchee/funny_password_generator
+mkname
+
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+*.log
+logs/

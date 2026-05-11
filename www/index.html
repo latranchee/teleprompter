@@ -1,0 +1,3587 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Teleprompter</title>
+    <!-- Google Font: Instrument Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+    <script>
+        // API base derived from URL path so each /{slug} addresses its own room
+        window.API_BASE = window.location.pathname.replace(/\/+$/, '') || '';
+        // Translations object
+        const translations = {
+            fr: {
+                // Page title
+                page_title: 'T\u00e9l\u00e9souffleur',
+
+                // Instructions panel
+                teleprompter: 'T\u00e9l\u00e9souffleur',
+                paste_to_begin: 'Collez du texte pour commencer',
+                play_pause: 'Lecture/Pause',
+                scroll_position: 'Position de d\u00e9filement',
+                speed: 'Vitesse',
+                font_size: 'Taille de police',
+                reset_to_top: 'Retour au d\u00e9but',
+                fullscreen: 'Plein \u00e9cran',
+                paste_text_btn: 'Coller du texte',
+
+                // Control buttons
+                play_title: 'Lecture (Espace)',
+                pause_title: 'Pause (Espace)',
+                decrease_speed: 'R\u00e9duire la vitesse',
+                increase_speed: 'Augmenter la vitesse',
+                decrease_font: 'R\u00e9duire la police',
+                increase_font: 'Agrandir la police',
+                edit_text: 'Modifier le texte',
+                settings: 'Param\u00e8tres',
+                help: 'Aide',
+                share_url: 'Partager l\'URL',
+                connection_connected: 'Connect\u00e9',
+                connection_disconnected: 'D\u00e9connect\u00e9',
+
+                // Edit modal
+                edit_text_title: '\u00c9diter le texte',
+                paste_placeholder: 'Collez votre script ici...',
+                clear: 'Effacer',
+                cancel: 'Annuler',
+                save: 'Enregistrer',
+
+                // Settings panel
+                settings_title: 'Param\u00e8tres',
+                font_size_label: 'Taille de police',
+                scroll_speed_label: 'Vitesse de d\u00e9filement',
+                scroll_step_label: 'Pas des fl\u00e8ches',
+                left_margin: 'Marge gauche',
+                right_margin: 'Marge droite',
+                line_height: 'Interligne',
+                paragraph_spacing: 'Espacement des paragraphes',
+                text_alignment: 'Alignement du texte',
+                font_family: 'Police de caract\u00e8res',
+                font_contrast: 'Contraste',
+                reset_defaults: 'Réinitialiser',
+                close: 'Fermer',
+
+                // Text alignment options
+                align_left: 'Gauche',
+                align_center: 'Centre',
+                align_justify: 'Justifi\u00e9',
+
+                // Font family options
+                font_system: 'Syst\u00e8me par d\u00e9faut',
+                font_serif: 'Serif',
+                font_sans_serif: 'Sans-Serif',
+                font_monospace: 'Monospace',
+
+                // QR modal
+                share_access: 'Partager l\'acc\u00e8s',
+                qr_hint: 'Scannez avec votre t\u00e9l\u00e9phone pour afficher le t\u00e9l\u00e9souffleur sur un autre appareil',
+                copied: 'Copi\u00e9 !',
+                qr_library_error: 'Biblioth\u00e8que QR non charg\u00e9e',
+
+                // Instructions panel - QR
+                scan_to_control: 'Scannez pour contr\u00f4ler depuis votre t\u00e9l\u00e9phone',
+                room_id_label: 'Votre identifiant est',
+                room_url_hint: "Cliquez sur votre identifiant pour copier l'adresse de partage. Cet identifiant est g\u00e9n\u00e9r\u00e9 automatiquement, r\u00e9utilisez le m\u00eame sur tous vos appareils pour partager la m\u00eame session.",
+                room_id_copied: 'Adresse copi\u00e9e !',
+
+                // Help modal
+                help_title: 'Aide',
+                keyboard_shortcuts: 'Raccourcis clavier',
+                mouse_controls: 'Contr\u00f4les souris',
+                url_parameters: 'Param\u00e8tres URL',
+                settings_panel: 'Panneau des param\u00e8tres',
+
+                // Help content - keyboard
+                play_pause_action: 'Lecture / Pause',
+                scroll_position_action: 'Position de d\u00e9filement',
+                adjust_speed_action: 'Ajuster la vitesse',
+                adjust_font_action: 'Ajuster la taille de police',
+                reset_to_top_action: 'Retour au d\u00e9but',
+                fullscreen_action: 'Plein \u00e9cran (navigateur)',
+
+                // Help content - mouse
+                click_on_text: 'Cliquer sur le texte',
+                mouse_wheel: 'Molette de la souris',
+                scroll_through_text: 'D\u00e9filer dans le texte',
+
+                // Help content - URL params
+                show_controls_permanently: 'Afficher les contr\u00f4les en permanence',
+                hide_controls_permanently: 'Masquer les contr\u00f4les en permanence',
+                dpi_scaling: 'Mise \u00e0 l\'\u00e9chelle DPI',
+                mirror_flip: 'Miroir / retournement horizontal',
+
+                // Help content - settings panel description
+                settings_panel_description: 'Cliquez sur l\'ic\u00f4ne d\'engrenage pour acc\u00e9der aux param\u00e8tres incluant la taille de police, la vitesse de d\u00e9filement, les marges, l\'interligne, l\'espacement des paragraphes, l\'alignement du texte et la police de caract\u00e8res. Les modifications se synchronisent sur tous les appareils connect\u00e9s.',
+
+                // Language selector
+                language: 'Langue',
+
+                // Rich text editor
+                format_bold: 'Gras (Ctrl+B)',
+                format_italic: 'Italique (Ctrl+I)',
+                format_clear: 'Effacer mise en forme',
+                load_file: 'Charger un fichier'
+            },
+            en: {
+                // Page title
+                page_title: 'Teleprompter',
+
+                // Instructions panel
+                teleprompter: 'Teleprompter',
+                paste_to_begin: 'Paste text to begin',
+                play_pause: 'Play/Pause',
+                scroll_position: 'Scroll position',
+                speed: 'Speed',
+                font_size: 'Font size',
+                reset_to_top: 'Reset to top',
+                fullscreen: 'Fullscreen',
+                paste_text_btn: 'Paste Text',
+
+                // Control buttons
+                play_title: 'Play (Space)',
+                pause_title: 'Pause (Space)',
+                decrease_speed: 'Decrease speed',
+                increase_speed: 'Increase speed',
+                decrease_font: 'Decrease font',
+                increase_font: 'Increase font',
+                edit_text: 'Edit text',
+                settings: 'Settings',
+                help: 'Help',
+                share_url: 'Share URL',
+                connection_connected: 'Connected',
+                connection_disconnected: 'Disconnected',
+
+                // Edit modal
+                edit_text_title: 'Edit Script',
+                paste_placeholder: 'Paste your script here...',
+                clear: 'Clear',
+                cancel: 'Cancel',
+                save: 'Save',
+
+                // Settings panel
+                settings_title: 'Settings',
+                font_size_label: 'Font Size',
+                scroll_speed_label: 'Scroll Speed',
+                scroll_step_label: 'Arrow Step',
+                left_margin: 'Left Margin',
+                right_margin: 'Right Margin',
+                line_height: 'Line Height',
+                paragraph_spacing: 'Paragraph Spacing',
+                text_alignment: 'Text Alignment',
+                font_family: 'Font Family',
+                font_contrast: 'Contrast',
+                reset_defaults: 'Reset to Defaults',
+                close: 'Close',
+
+                // Text alignment options
+                align_left: 'Left',
+                align_center: 'Center',
+                align_justify: 'Justify',
+
+                // Font family options
+                font_system: 'System Default',
+                font_serif: 'Serif',
+                font_sans_serif: 'Sans-Serif',
+                font_monospace: 'Monospace',
+
+                // QR modal
+                share_access: 'Share Access',
+                qr_hint: 'Scan with your phone to view the teleprompter on another device',
+                copied: 'Copied!',
+                qr_library_error: 'QR library not loaded',
+
+                // Instructions panel - QR
+                scan_to_control: 'Scan to control from your phone',
+                room_id_label: 'Your identifier is',
+                room_url_hint: 'Click your identifier to copy the share URL. The identifier is generated automatically — reuse the same one on every device to share one session.',
+                room_id_copied: 'URL copied!',
+
+                // Help modal
+                help_title: 'Help',
+                keyboard_shortcuts: 'Keyboard Shortcuts',
+                mouse_controls: 'Mouse Controls',
+                url_parameters: 'URL Parameters',
+                settings_panel: 'Settings Panel',
+
+                // Help content - keyboard
+                play_pause_action: 'Play / Pause',
+                scroll_position_action: 'Scroll position',
+                adjust_speed_action: 'Adjust speed',
+                adjust_font_action: 'Adjust font size',
+                reset_to_top_action: 'Reset to top',
+                fullscreen_action: 'Fullscreen (browser)',
+
+                // Help content - mouse
+                click_on_text: 'Click on text',
+                mouse_wheel: 'Mouse wheel',
+                scroll_through_text: 'Scroll through text',
+
+                // Help content - URL params
+                show_controls_permanently: 'Show controls permanently',
+                hide_controls_permanently: 'Hide controls permanently',
+                dpi_scaling: 'DPI scaling',
+                mirror_flip: 'Mirror / flip horizontally',
+
+                // Help content - settings panel description
+                settings_panel_description: 'Click the gear icon to access settings including font size, scroll speed, margins, line height, paragraph spacing, text alignment, and font family. Changes sync across all connected devices.',
+
+                // Language selector
+                language: 'Language',
+
+                // Rich text editor
+                format_bold: 'Bold (Ctrl+B)',
+                format_italic: 'Italic (Ctrl+I)',
+                format_clear: 'Clear formatting',
+                load_file: 'Load file'
+            }
+        };
+
+        // Current language (default to French)
+        let currentLang = 'fr';
+
+        // Translation function
+        function t(key) {
+            return translations[currentLang][key] || translations['en'][key] || key;
+        }
+
+        // Get language from URL or localStorage
+        function getInitialLanguage() {
+            const params = new URLSearchParams(window.location.search);
+            const urlLang = params.get('lang');
+            if (urlLang && translations[urlLang]) {
+                return urlLang;
+            }
+            const storedLang = localStorage.getItem('teleprompter_language');
+            if (storedLang && translations[storedLang]) {
+                return storedLang;
+            }
+            return 'fr'; // Default to French
+        }
+
+        // Initialize language early
+        currentLang = getInitialLanguage();
+        document.title = translations[currentLang].page_title;
+    </script>
+    <style>
+        /* ============================================
+           EDITORIAL NOIR - Teleprompter Theme
+           A refined monochromatic design system
+           ============================================ */
+
+        :root {
+            /* Core palette */
+            --bg-deep: #000000;
+            --bg-surface: #0d0d0d;
+            --bg-elevated: #171717;
+            --bg-hover: #1f1f1f;
+            --bg-active: #262626;
+            --text-primary: #fafafa;
+            --text-secondary: #a3a3a3;
+            --text-muted: #525252;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-medium: rgba(255, 255, 255, 0.12);
+            --border-strong: rgba(255, 255, 255, 0.18);
+            --focus-ring: rgba(255, 255, 255, 0.25);
+            --glass-bg: rgba(13, 13, 13, 0.75);
+            --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.5);
+            --shadow-strong: 0 8px 40px rgba(0, 0, 0, 0.7);
+
+            /* Typography */
+            --font-ui: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: ui-monospace, 'SF Mono', Menlo, Monaco, 'Cascadia Code', monospace;
+
+            /* Transitions */
+            --transition-fast: 150ms ease-out;
+            --transition-normal: 200ms ease-out;
+            --transition-slow: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+
+            /* Spacing */
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            background: var(--bg-deep);
+            background-image: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-surface) 100%);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            font-weight: 400;
+            letter-spacing: 0.01em;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ============================================
+           Main Teleprompter Display
+           ============================================ */
+
+        #teleprompter {
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            /* width, height, transform set by JS updateViewportScale() */
+        }
+
+        #text-container {
+            position: absolute;
+            top: 50%;
+            left: var(--margin-left, 10%);
+            right: var(--margin-right, 10%);
+            transform: translate3d(0, var(--scroll-offset, 0px), 0);
+            will-change: transform;
+        }
+
+        #text-content {
+            font-size: var(--font-size, 48px);
+            line-height: var(--line-height, 1.5);
+            text-align: var(--text-align, center);
+            font-family: var(--font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+            color: var(--text-color, #fafafa);
+            letter-spacing: 0.02em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        #text-content p {
+            margin-bottom: var(--paragraph-spacing, 1em);
+        }
+
+        #text-content h1, #text-content h2, #text-content h3,
+        #text-content h4, #text-content h5, #text-content h6 {
+            margin-bottom: 0.5em;
+            margin-top: 0.5em;
+        }
+
+        #text-content ul, #text-content ol {
+            margin-left: 1.5em;
+            margin-bottom: 1em;
+        }
+
+        #text-content blockquote {
+            border-left: 3px solid var(--text-muted);
+            padding-left: 1em;
+            margin: 1em 0;
+            opacity: 0.8;
+        }
+
+        /* ============================================
+           Instructions Panel (Empty State)
+           ============================================ */
+
+        #instructions {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            animation: fadeIn 0.6s ease-out;
+            max-width: 680px;
+            width: 90%;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -48%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        #instructions h1 {
+            font-size: 2.2em;
+            font-weight: 500;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .instructions-columns {
+            display: flex;
+            gap: 20px;
+        }
+
+        .instructions-col-left,
+        .instructions-col-right {
+            flex: 1;
+            padding: 24px;
+            background: var(--bg-elevated);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .instructions-col-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .instructions-scan-prompt {
+            font-size: 0.85em;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        #instructions-qr-container {
+            background: #fff;
+            padding: 10px;
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            line-height: 0;
+        }
+
+        #instructions-qr-container canvas,
+        #instructions-qr-container img {
+            display: block;
+        }
+
+        .instructions-room-url {
+            width: 100%;
+        }
+
+        .instructions-room-url-label {
+            font-size: 0.7em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .instructions-room-id {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle, rgba(255,255,255,0.08));
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+            user-select: none;
+        }
+
+        .instructions-room-id:hover {
+            background: var(--bg-surface-hover, rgba(255,255,255,0.04));
+            border-color: var(--border-strong, rgba(255,255,255,0.18));
+        }
+
+        .instructions-room-id:active {
+            transform: scale(0.99);
+        }
+
+        .instructions-room-id.copied {
+            border-color: var(--accent, #22c55e);
+        }
+
+        .instructions-room-id-slug {
+            flex: 1;
+            font-family: var(--font-mono);
+            font-size: 0.95em;
+            color: var(--text-primary);
+            word-break: break-all;
+        }
+
+        .instructions-room-id-copy {
+            display: inline-flex;
+            font-size: 1.25em;
+            color: var(--text-muted);
+            transition: color 0.15s ease;
+        }
+
+        .instructions-room-id:hover .instructions-room-id-copy {
+            color: var(--text-primary);
+        }
+
+        .instructions-room-id-feedback {
+            font-size: 0.75em;
+            color: var(--accent, #22c55e);
+            min-height: 1em;
+            margin-bottom: 4px;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        .instructions-room-id-feedback.visible {
+            opacity: 1;
+        }
+
+        .instructions-room-url-hint {
+            font-size: 0.75em;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .instructions-col-title {
+            font-size: 0.7em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        #instructions .shortcut-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 0.85em;
+            color: var(--text-secondary);
+        }
+
+        #instructions .shortcut-row .keys {
+            display: flex;
+            gap: 4px;
+        }
+
+        #instructions kbd {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-medium);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-family: var(--font-mono);
+            font-size: 0.8em;
+            min-width: 1.8em;
+            color: var(--text-primary);
+        }
+
+        .instructions-cta {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        #edit-btn-main {
+            padding: 14px 40px;
+            font-size: 1em;
+            font-weight: 500;
+            font-family: var(--font-ui);
+            background: var(--text-primary);
+            color: var(--bg-deep);
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            box-shadow: var(--shadow-soft);
+        }
+
+        #edit-btn-main:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-strong);
+        }
+
+        #edit-btn-main:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 600px) {
+            .instructions-columns {
+                flex-direction: column;
+            }
+
+            .instructions-col-left,
+            .instructions-col-right {
+                width: 100%;
+            }
+        }
+
+        /* ============================================
+           Control Bar (Floating Pill)
+           ============================================ */
+
+        #controls {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(32px);
+            -webkit-backdrop-filter: blur(32px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+            z-index: 100;
+            box-shadow: var(--shadow-strong);
+        }
+
+        #controls:not(.hud-hidden):hover,
+        #controls.visible {
+            opacity: 1;
+        }
+
+        #controls.hud-hidden {
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+
+        #controls .control-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #controls button {
+            background: transparent;
+            color: var(--text-primary);
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-size: 0.9em;
+            font-family: var(--font-ui);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background var(--transition-fast);
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #controls button:hover {
+            background: var(--bg-hover);
+        }
+
+        #controls button:active {
+            background: var(--bg-active);
+        }
+
+        #controls button:focus-visible {
+            outline: 2px solid var(--focus-ring);
+            outline-offset: 2px;
+        }
+
+        #play-btn {
+            font-size: 1.1em;
+            padding: 10px 18px;
+        }
+
+        #play-btn svg {
+            display: block;
+        }
+
+        .separator {
+            width: 1px;
+            height: 24px;
+            background: var(--border-subtle);
+            margin: 0 6px;
+        }
+
+        #connection-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+            margin-left: 8px;
+            flex-shrink: 0;
+            transition: background var(--transition-normal);
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+        }
+
+        #connection-status.connected {
+            background: #22c55e;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        /* Pedal gauge — vertical bar on the right edge, centered vertically */
+        #pedal-gauge {
+            position: fixed;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 360px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.06);
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        #pedal-gauge.visible { opacity: 1; }
+        #pedal-gauge-fill {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            border-radius: 3px;
+            transition: height 0.15s, top 0.15s, bottom 0.15s, background 0.15s, box-shadow 0.15s;
+        }
+        #pedal-gauge-fill.forward {
+            bottom: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+        }
+        #pedal-gauge-fill.reverse {
+            top: 50%;
+            background: #f59e0b;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+        }
+        /* Center tick mark */
+        #pedal-gauge::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -1px;
+            right: -1px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Admin / debug section in settings */
+        #admin-section {
+            display: none;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 12px;
+            padding-top: 12px;
+        }
+
+        #admin-section .admin-header {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        #pedal-debug-table {
+            width: 100%;
+            font-family: monospace;
+            font-size: 11px;
+            color: #94a3b8;
+            background: rgba(0,0,0,0.3);
+            border-radius: 4px;
+            margin-top: 8px;
+            border-collapse: collapse;
+        }
+
+        #pedal-debug-table th,
+        #pedal-debug-table td {
+            padding: 4px 8px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        #pedal-debug-table th {
+            color: #64748b;
+            font-weight: normal;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        #pedal-debug-table .status-on { color: #4ade80; }
+        #pedal-debug-table .status-off { color: #64748b; }
+        #pedal-debug-table .value-active { color: #e2e8f0; }
+        #pedal-debug-table .value-zero { color: #64748b; }
+
+        /* ============================================
+           Settings Panel
+           ============================================ */
+
+        #settings-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 140;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-normal), visibility var(--transition-normal);
+        }
+
+        #settings-backdrop.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #settings-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 340px;
+            max-width: 90vw;
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            padding: 0;
+            z-index: 150;
+            overflow-y: auto;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: transform var(--transition-slow), opacity var(--transition-normal);
+            border-left: 1px solid var(--border-subtle);
+            box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
+        }
+
+        #settings-panel.visible {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        #settings-panel .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            position: sticky;
+            top: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            z-index: 1;
+        }
+
+        #settings-panel h2 {
+            font-size: 1.1em;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin: 0;
+        }
+
+        #close-settings-x {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.4em;
+            cursor: pointer;
+            padding: 4px 8px;
+            line-height: 1;
+            border-radius: var(--radius-sm);
+            transition: color var(--transition-fast), background var(--transition-fast);
+        }
+
+        #close-settings-x:hover {
+            color: var(--text-primary);
+            background: var(--bg-hover);
+        }
+
+        #settings-panel .panel-content {
+            padding: 20px 24px;
+        }
+
+        #settings-panel label {
+            display: block;
+            margin-bottom: 24px;
+        }
+
+        #settings-panel label .label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 10px;
+        }
+
+        #settings-panel label .label-text {
+            font-size: 0.9em;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        #settings-panel label .label-value {
+            font-size: 0.85em;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Custom Range Slider Styling */
+        #settings-panel input[type="range"] {
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        #settings-panel input[type="range"]::-webkit-slider-runnable-track {
+            height: 3px;
+            background: transparent;
+            border-radius: 2px;
+        }
+
+        #settings-panel input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--text-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            margin-top: -5.5px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        #settings-panel input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #settings-panel input[type="range"]::-moz-range-track {
+            height: 3px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 2px;
+        }
+
+        #settings-panel input[type="range"]::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            background: var(--text-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        #settings-panel input[type="range"]:focus-visible {
+            outline: none;
+        }
+
+        #settings-panel input[type="range"]:focus-visible::-webkit-slider-thumb {
+            box-shadow: 0 0 0 3px var(--focus-ring), 0 2px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Custom Select Styling */
+        #settings-panel select {
+            width: 100%;
+            padding: 12px 40px 12px 14px;
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-sm);
+            font-size: 0.9em;
+            font-family: var(--font-ui);
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a3a3a3'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px;
+            transition: border-color var(--transition-fast), background var(--transition-fast);
+        }
+
+        #settings-panel select:hover {
+            border-color: var(--border-strong);
+        }
+
+        #settings-panel select:focus {
+            outline: none;
+            border-color: var(--text-secondary);
+        }
+
+        #settings-panel .setting-group {
+            margin-bottom: 24px;
+        }
+
+        #settings-panel .setting-group .label-row {
+            margin-bottom: 10px;
+        }
+
+        #settings-panel .setting-group .label-text {
+            font-size: 0.9em;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .align-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .align-buttons button {
+            flex: 1;
+            padding: 12px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .align-buttons button:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-strong);
+            color: var(--text-primary);
+        }
+
+        .align-buttons button.active {
+            background: var(--bg-active);
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+        }
+
+        #close-settings {
+            display: none;
+        }
+
+        .settings-buttons {
+            display: flex;
+            gap: 10px;
+            padding: 16px 24px 24px;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 8px;
+        }
+
+        .settings-buttons button {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-ui);
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .settings-btn-danger {
+            background: var(--bg-elevated);
+            color: #ef4444;
+        }
+
+        .settings-btn-danger:hover {
+            background: var(--bg-hover);
+        }
+
+        /* ============================================
+           Modal Base Styles
+           ============================================ */
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-normal), visibility var(--transition-normal);
+        }
+
+        .modal.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-strong);
+            transform: scale(0.96);
+            transition: transform var(--transition-slow);
+        }
+
+        .modal.visible .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-content .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .modal-content h2 {
+            font-size: 1.2em;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin: 0;
+        }
+
+        .modal-content .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-content .modal-header h2 {
+            flex: 1;
+        }
+
+        .modal-header-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.4em;
+            cursor: pointer;
+            padding: 4px 8px;
+            line-height: 1;
+            border-radius: var(--radius-sm);
+            transition: color var(--transition-fast), background var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-header-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-hover);
+        }
+
+        .editor-toolbar {
+            display: flex;
+            gap: 4px;
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            background: var(--bg-elevated);
+        }
+
+        .editor-toolbar button {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-family: var(--font-ui);
+            font-size: 0.9em;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            min-height: 36px;
+        }
+
+        .editor-toolbar button:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-medium);
+            color: var(--text-primary);
+        }
+
+        .editor-toolbar button.active {
+            background: var(--bg-active);
+            border-color: var(--border-strong);
+            color: var(--text-primary);
+        }
+
+        .modal-content .modal-body {
+            padding: 0;
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            min-height: 0;
+        }
+
+        #text-input {
+            width: 100%;
+            flex: 1;
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 0;
+            padding: 20px 24px;
+            font-size: 1em;
+            font-family: var(--font-ui);
+            line-height: 1.6;
+            overflow-y: auto;
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        #text-input:focus {
+            outline: none;
+        }
+
+        #text-input:empty::before {
+            content: attr(data-placeholder);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        #text-input b, #text-input strong {
+            font-weight: 700;
+        }
+
+        #text-input i, #text-input em {
+            font-style: italic;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            padding: 16px 24px;
+            justify-content: flex-end;
+            border-top: 1px solid var(--border-subtle);
+            background: var(--bg-elevated);
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+        }
+
+        .modal-actions button {
+            padding: 12px 24px;
+            font-size: 0.9em;
+            font-family: var(--font-ui);
+            font-weight: 500;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            min-height: 44px;
+        }
+
+        .modal-actions .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-medium);
+        }
+
+        .modal-actions .btn-ghost:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            border-color: var(--border-strong);
+        }
+
+        .modal-actions .btn-primary {
+            background: var(--text-primary);
+            color: var(--bg-deep);
+            border: none;
+        }
+
+        .modal-actions .btn-primary:hover {
+            background: #e5e5e5;
+        }
+
+        .modal-actions .btn-danger {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .modal-actions .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        /* ============================================
+           QR Code Modal
+           ============================================ */
+
+        #qr-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 300;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-normal), visibility var(--transition-normal);
+        }
+
+        #qr-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #qr-modal {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            max-width: 380px;
+            width: 90%;
+            overflow: hidden;
+            box-shadow: var(--shadow-strong);
+            transform: scale(0.96);
+            transition: transform var(--transition-slow);
+        }
+
+        #qr-overlay.visible #qr-modal {
+            transform: scale(1);
+        }
+
+        #qr-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        #qr-modal-header span {
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        #qr-close {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.3em;
+            cursor: pointer;
+            padding: 4px 8px;
+            line-height: 1;
+            border-radius: var(--radius-sm);
+            transition: color var(--transition-fast), background var(--transition-fast);
+        }
+
+        #qr-close:hover {
+            color: var(--text-primary);
+            background: var(--bg-hover);
+        }
+
+        #qr-modal-body {
+            padding: 24px;
+            text-align: center;
+        }
+
+        #qr-code-container {
+            background: #fff;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+
+        #qr-code-container canvas,
+        #qr-code-container img {
+            display: block;
+        }
+
+        #qr-url {
+            font-family: var(--font-mono);
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            word-break: break-all;
+            padding: 12px 14px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            margin-bottom: 14px;
+            cursor: pointer;
+            transition: background var(--transition-fast), border-color var(--transition-fast);
+        }
+
+        #qr-url:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-medium);
+        }
+
+        #qr-hint {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* ============================================
+           Help Modal
+           ============================================ */
+
+        #help-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 300;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-normal), visibility var(--transition-normal);
+        }
+
+        #help-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #help-modal {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            max-width: 520px;
+            width: 90%;
+            max-height: 85vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-strong);
+            transform: scale(0.96);
+            transition: transform var(--transition-slow);
+        }
+
+        #help-overlay.visible #help-modal {
+            transform: scale(1);
+        }
+
+        #help-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            flex-shrink: 0;
+        }
+
+        #help-modal-header span {
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        #help-close {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.3em;
+            cursor: pointer;
+            padding: 4px 8px;
+            line-height: 1;
+            border-radius: var(--radius-sm);
+            transition: color var(--transition-fast), background var(--transition-fast);
+        }
+
+        #help-close:hover {
+            color: var(--text-primary);
+            background: var(--bg-hover);
+        }
+
+        #help-modal-body {
+            padding: 20px 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        #help-modal-body h3 {
+            color: var(--text-primary);
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 0 0 14px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        #help-modal-body h3:not(:first-child) {
+            margin-top: 24px;
+        }
+
+        .help-section {
+            margin-bottom: 12px;
+        }
+
+        .help-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 0.9em;
+        }
+
+        .help-row .help-key {
+            color: var(--text-secondary);
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .help-row .help-action {
+            color: var(--text-primary);
+            text-align: right;
+        }
+
+        .help-row kbd {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-medium);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-family: var(--font-mono);
+            font-size: 0.85em;
+            min-width: 1.8em;
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .help-description {
+            color: var(--text-muted);
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin-top: 6px;
+        }
+
+        .help-param {
+            font-family: var(--font-mono);
+            background: var(--bg-elevated);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        /* ============================================
+           Utility Classes
+           ============================================ */
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ============================================
+           Responsive Adjustments
+           ============================================ */
+
+        @media (max-width: 640px) {
+            #instructions h1 {
+                font-size: 2em;
+            }
+
+            #instructions > p:first-of-type {
+                font-size: 1em;
+            }
+
+            #instructions .shortcut-row {
+                font-size: 0.9em;
+            }
+
+            #controls {
+                bottom: 16px;
+                left: 16px;
+                right: 16px;
+                transform: none;
+                padding: 8px 12px;
+                gap: 4px;
+                flex-wrap: wrap;
+                justify-content: center;
+                border-radius: var(--radius-lg);
+            }
+
+            #controls button {
+                padding: 8px 12px;
+                min-width: 40px;
+                min-height: 40px;
+            }
+
+            .separator {
+                display: none;
+            }
+
+            #settings-panel {
+                width: 100%;
+                max-width: 100%;
+                border-left: none;
+                border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+                top: auto;
+                bottom: 0;
+                max-height: 85vh;
+                transform: translateY(100%);
+            }
+
+            #settings-panel.visible {
+                transform: translateY(0);
+            }
+
+            .modal-content {
+                max-width: 100%;
+                border-radius: var(--radius-md);
+            }
+
+            .modal-actions {
+                flex-wrap: wrap;
+            }
+
+            .modal-actions button {
+                flex: 1;
+                min-width: calc(50% - 5px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            #controls .control-group.hide-mobile {
+                display: none;
+            }
+
+            #edit-btn span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main text display -->
+    <div id="teleprompter">
+        <div id="text-container">
+            <div id="text-content"></div>
+        </div>
+    </div>
+
+    <!-- Instructions (shown when no text) -->
+    <div id="instructions">
+        <h1 data-i18n="teleprompter">Teleprompter</h1>
+        <div class="instructions-columns">
+            <div class="instructions-col-left">
+                <div class="instructions-scan-prompt" data-i18n="scan_to_control">Scan to control from your phone</div>
+                <div id="instructions-qr-container"></div>
+                <div class="instructions-room-url">
+                    <div class="instructions-room-url-label" data-i18n="room_id_label">Your identifier is</div>
+                    <div class="instructions-room-id" id="instructions-room-id" role="button" tabindex="0" aria-label="Copy share URL">
+                        <span class="instructions-room-id-slug" id="instructions-room-id-slug"></span>
+                        <iconify-icon class="instructions-room-id-copy" icon="icon-park-twotone:click" aria-hidden="true"></iconify-icon>
+                    </div>
+                    <div class="instructions-room-id-feedback" id="instructions-room-id-feedback" data-i18n="room_id_copied">URL copied!</div>
+                    <div class="instructions-room-url-hint" data-i18n="room_url_hint">Click your identifier to copy the share URL.</div>
+                </div>
+            </div>
+            <div class="instructions-col-right">
+                <div class="instructions-col-title" data-i18n="keyboard_shortcuts">Keyboard Shortcuts</div>
+                <div class="shortcut-row">
+                    <span class="keys"><kbd>Space</kbd></span>
+                    <span data-i18n="play_pause">Play/Pause</span>
+                </div>
+                <div class="shortcut-row">
+                    <span class="keys"><kbd>&uarr;</kbd><kbd>&darr;</kbd></span>
+                    <span data-i18n="scroll_position">Scroll position</span>
+                </div>
+                <div class="shortcut-row">
+                    <span class="keys"><kbd>&larr;</kbd><kbd>&rarr;</kbd></span>
+                    <span data-i18n="speed">Speed</span>
+                </div>
+                <div class="shortcut-row">
+                    <span class="keys"><kbd>+</kbd><kbd>-</kbd></span>
+                    <span data-i18n="font_size">Font size</span>
+                </div>
+            </div>
+        </div>
+        <div class="instructions-cta">
+            <button id="edit-btn-main" data-i18n="paste_text_btn">Paste Text</button>
+        </div>
+    </div>
+
+    <!-- Hidden file input for loading files -->
+    <input type="file" id="file-input" accept=".txt,.docx,.rtf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/rtf" hidden>
+
+    <!-- Control overlay -->
+    <div id="controls">
+        <div class="control-group">
+            <button id="restart-btn" data-i18n-title="reset_to_top" title="Reset to top (Esc)">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z"/>
+                </svg>
+            </button>
+            <button id="play-btn" data-i18n-title="play_title" title="Play (Space)">
+                <svg class="icon-play" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+            </button>
+        </div>
+        <span class="separator"></span>
+        <div class="control-group">
+            <button id="edit-btn" data-i18n-title="edit_text" title="Edit text"><span data-i18n="edit_text">Modifier le texte</span></button>
+            <button id="load-file-btn" data-i18n-title="load_file" title="Load file">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+            </button>
+            <button id="help-btn" data-i18n-title="help" title="Help">?</button>
+            <button id="qr-btn" data-i18n-title="share_url" title="Share URL">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="1"/>
+                    <rect x="5" y="5" width="3" height="3" rx="0.5" fill="currentColor"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1"/>
+                    <rect x="16" y="5" width="3" height="3" rx="0.5" fill="currentColor"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1"/>
+                    <rect x="5" y="16" width="3" height="3" rx="0.5" fill="currentColor"/>
+                    <rect x="14" y="14" width="3" height="3" fill="currentColor" stroke="none"/>
+                    <rect x="18" y="14" width="3" height="3" fill="currentColor" stroke="none"/>
+                    <rect x="14" y="18" width="3" height="3" fill="currentColor" stroke="none"/>
+                </svg>
+            </button>
+        </div>
+        <span class="separator"></span>
+        <button id="settings-btn" data-i18n-title="settings" title="Settings">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+            </svg>
+        </button>
+        <span id="connection-status" class="disconnected" data-i18n-title="connection_disconnected" title="Disconnected"></span>
+    </div>
+
+    <!-- Pedal acceleration gauge -->
+    <div id="pedal-gauge"><div id="pedal-gauge-fill"></div></div>
+
+    <!-- Text edit modal -->
+    <div id="edit-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-i18n="edit_text_title">Edit Script</h2>
+                <button id="modal-load-sample-btn" class="modal-header-btn" data-i18n-title="load_sample" title="Load sample text">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                </button>
+                <button id="modal-load-file-btn" class="modal-header-btn" data-i18n-title="load_file" title="Load file">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                    </svg>
+                </button>
+                <button id="close-edit-x" class="modal-header-btn">&times;</button>
+            </div>
+            <div class="editor-toolbar">
+                <button id="format-bold" data-i18n-title="format_bold" title="Bold (Ctrl+B)"><strong>B</strong></button>
+                <button id="format-italic" data-i18n-title="format_italic" title="Italic (Ctrl+I)"><em>I</em></button>
+                <button id="format-clear" data-i18n-title="format_clear" title="Clear formatting">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                        <path d="M3.27 5L2 6.27l6.97 6.97L6.5 19h3l1.57-3.66L16.73 21 18 19.73 3.27 5zM6 5v.18L8.82 8h2.4l-.72 1.68 2.1 2.1L14.21 8H20V5H6z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="text-input" contenteditable="true" data-placeholder="Paste your script here..." data-i18n-data-placeholder="paste_placeholder"></div>
+            </div>
+            <div class="modal-actions">
+                <button id="clear-text" class="btn-danger" data-i18n="clear">Clear</button>
+                <button id="cancel-edit" class="btn-ghost" data-i18n="cancel">Cancel</button>
+                <button id="save-text" class="btn-primary" data-i18n="save">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings panel backdrop -->
+    <div id="settings-backdrop" class="hidden"></div>
+
+    <!-- Settings panel -->
+    <div id="settings-panel">
+        <div class="panel-header">
+            <h2 data-i18n="settings_title">Settings</h2>
+            <button id="close-settings-x">&times;</button>
+        </div>
+        <div class="panel-content">
+            <label>
+                <div class="label-row">
+                    <span class="label-text" data-i18n="language">Language</span>
+                </div>
+                <select id="language-select">
+                    <option value="fr">Francais</option>
+                    <option value="en">English</option>
+                </select>
+            </label>
+            <label>
+                <div class="label-row">
+                    <span class="label-text" data-i18n="font_size_label">Font Size</span>
+                    <span class="label-value"><span id="font-value">48</span>px</span>
+                </div>
+                <input type="range" id="font-slider" min="12" max="200" value="48">
+            </label>
+            <label>
+                <div class="label-row">
+                    <span class="label-text" data-i18n="scroll_speed_label">Scroll Speed</span>
+                    <span class="label-value"><span id="speed-value">50</span>px/s</span>
+                </div>
+                <input type="range" id="speed-slider" min="5" max="500" value="50">
+            </label>
+            <label>
+                <div class="label-row">
+                    <span class="label-text" data-i18n="scroll_step_label">Arrow Step</span>
+                    <span class="label-value"><span id="step-value">100</span>px</span>
+                </div>
+                <input type="range" id="step-slider" min="20" max="500" value="100">
+            </label>
+            <label>
+                <div class="label-row">
+                    <span class="label-text" data-i18n="left_margin">Left Margin</span>
+                    <span class="label-value"><span id="margin-left-value">10</span>%</span>
+                </div>
+                <input type="range" id="margin-left-slider" min="0" max="45" value="10">
+            </label>
+            <label>
+                <div class="label-row">
+                    <span class="label-text" data-i18n="right_margin">Right Margin</span>
+                    <span class="label-value"><span id="margin-right-value">10</span>%</span>
+                </div>
+                <input type="range" id="margin-right-slider" min="0" max="45" value="10">
+            </label>
+            <label>
+                <div class="label-row">
+                    <span class="label-text" data-i18n="line_height">Line Height</span>
+                    <span class="label-value"><span id="line-height-value">1.5</span></span>
+                </div>
+                <input type="range" id="line-height-slider" min="1.0" max="3.0" step="0.1" value="1.5">
+            </label>
+            <label>
+                <div class="label-row">
+                    <span class="label-text" data-i18n="paragraph_spacing">Paragraph Spacing</span>
+                    <span class="label-value"><span id="paragraph-spacing-value">1</span>em</span>
+                </div>
+                <input type="range" id="paragraph-spacing-slider" min="0" max="3" step="0.1" value="1">
+            </label>
+            <div class="setting-group">
+                <div class="label-row">
+                    <span class="label-text" data-i18n="text_alignment">Text Alignment</span>
+                </div>
+                <div class="align-buttons" id="text-align-buttons">
+                    <button type="button" data-align="left" data-i18n-title="align_left" title="Left">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                            <path d="M3 3h18v2H3V3zm0 4h12v2H3V7zm0 4h18v2H3v-2zm0 4h12v2H3v-2zm0 4h18v2H3v-2z"/>
+                        </svg>
+                    </button>
+                    <button type="button" data-align="center" data-i18n-title="align_center" title="Center" class="active">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                            <path d="M3 3h18v2H3V3zm3 4h12v2H6V7zm-3 4h18v2H3v-2zm3 4h12v2H6v-2zm-3 4h18v2H3v-2z"/>
+                        </svg>
+                    </button>
+                    <button type="button" data-align="justify" data-i18n-title="align_justify" title="Justify">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                            <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2zm0 4h18v2H3v-2z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <label>
+                <div class="label-row">
+                    <span class="label-text" data-i18n="font_family">Font Family</span>
+                </div>
+                <select id="font-family-select">
+                    <option value="system" selected data-i18n="font_system">System Default</option>
+                    <option value="serif" data-i18n="font_serif">Serif</option>
+                    <option value="sans-serif" data-i18n="font_sans_serif">Sans-Serif</option>
+                    <option value="monospace" data-i18n="font_monospace">Monospace</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Arial">Arial</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                </select>
+            </label>
+            <label>
+                <div class="label-row">
+                    <span class="label-text" data-i18n="font_contrast">Contrast</span>
+                    <span class="label-value"><span id="font-contrast-value">100</span>%</span>
+                </div>
+                <input type="range" id="font-contrast-slider" min="30" max="100" value="100">
+            </label>
+            <div id="admin-section">
+                <div class="admin-header">Foot Pedal Channels</div>
+                <table id="pedal-debug-table">
+                    <thead>
+                        <tr><th>Channel</th><th>Status</th><th>Value</th><th>Cmds</th><th>Last</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr id="pedal-row-mqtt">
+                            <td>MQTT</td>
+                            <td class="status-off">--</td>
+                            <td class="value-zero">--</td>
+                            <td>0</td>
+                            <td>--</td>
+                        </tr>
+                        <tr id="pedal-row-serial">
+                            <td>Serial</td>
+                            <td class="status-off">--</td>
+                            <td class="value-zero">--</td>
+                            <td>0</td>
+                            <td>--</td>
+                        </tr>
+                        <tr id="pedal-row-http">
+                            <td>HTTP</td>
+                            <td class="status-on">ready</td>
+                            <td class="value-zero">--</td>
+                            <td>0</td>
+                            <td>--</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="font-family:monospace;font-size:11px;color:#64748b;margin-top:6px" id="pedal-active-line">
+                    active: -- | pedal_value: 0 | playing: false
+                </div>
+            </div>
+        </div>
+        <div class="settings-buttons">
+            <button id="reset-defaults" class="settings-btn-danger" data-i18n="reset_defaults">Reset to Defaults</button>
+            <button id="close-settings" data-i18n="close">Close</button>
+        </div>
+    </div>
+
+    <!-- QR Code Modal -->
+    <div id="qr-overlay" class="hidden">
+        <div id="qr-modal">
+            <div id="qr-modal-header">
+                <span data-i18n="share_access">Share Access</span>
+                <button id="qr-close">&times;</button>
+            </div>
+            <div id="qr-modal-body">
+                <div id="qr-code-container"></div>
+                <div id="qr-url"></div>
+                <div id="qr-hint" data-i18n="qr_hint">Scan with your phone to view the teleprompter on another device</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-overlay" class="hidden">
+        <div id="help-modal">
+            <div id="help-modal-header">
+                <span data-i18n="help_title">Help</span>
+                <button id="help-close">&times;</button>
+            </div>
+            <div id="help-modal-body">
+                <h3 data-i18n="keyboard_shortcuts">Keyboard Shortcuts</h3>
+                <div class="help-section">
+                    <div class="help-row">
+                        <span class="help-key"><kbd>Space</kbd></span>
+                        <span class="help-action" data-i18n="play_pause_action">Play / Pause</span>
+                    </div>
+                    <div class="help-row">
+                        <span class="help-key"><kbd>&uarr;</kbd> <kbd>&darr;</kbd></span>
+                        <span class="help-action" data-i18n="scroll_position_action">Scroll position</span>
+                    </div>
+                    <div class="help-row">
+                        <span class="help-key"><kbd>&larr;</kbd> <kbd>&rarr;</kbd></span>
+                        <span class="help-action" data-i18n="adjust_speed_action">Adjust speed</span>
+                    </div>
+                    <div class="help-row">
+                        <span class="help-key"><kbd>+</kbd> <kbd>-</kbd></span>
+                        <span class="help-action" data-i18n="adjust_font_action">Adjust font size</span>
+                    </div>
+                    <div class="help-row">
+                        <span class="help-key"><kbd>Esc</kbd></span>
+                        <span class="help-action" data-i18n="reset_to_top_action">Reset to top</span>
+                    </div>
+                    <div class="help-row">
+                        <span class="help-key"><kbd>F11</kbd></span>
+                        <span class="help-action" data-i18n="fullscreen_action">Fullscreen (browser)</span>
+                    </div>
+                </div>
+
+                <h3 data-i18n="mouse_controls">Mouse Controls</h3>
+                <div class="help-section">
+                    <div class="help-row">
+                        <span class="help-key" data-i18n="click_on_text">Click on text</span>
+                        <span class="help-action" data-i18n="play_pause_action">Play / Pause</span>
+                    </div>
+                    <div class="help-row">
+                        <span class="help-key" data-i18n="mouse_wheel">Mouse wheel</span>
+                        <span class="help-action" data-i18n="scroll_through_text">Scroll through text</span>
+                    </div>
+                </div>
+
+                <h3 data-i18n="url_parameters">URL Parameters</h3>
+                <div class="help-section">
+                    <div class="help-row">
+                        <span class="help-key"><span class="help-param">?hud=1</span> or <span class="help-param">?controls=1</span></span>
+                        <span class="help-action" data-i18n="show_controls_permanently">Show controls permanently</span>
+                    </div>
+                    <div class="help-row">
+                        <span class="help-key"><span class="help-param">?hud=0</span> or <span class="help-param">?controls=0</span></span>
+                        <span class="help-action" data-i18n="hide_controls_permanently">Hide controls permanently</span>
+                    </div>
+                    <div class="help-row">
+                        <span class="help-key"><span class="help-param">?scale=X</span></span>
+                        <span class="help-action" data-i18n="dpi_scaling">DPI scaling (0.5 - 3.0)</span>
+                    </div>
+                    <div class="help-row">
+                        <span class="help-key"><span class="help-param">?mirror=1</span> or <span class="help-param">?flip=1</span></span>
+                        <span class="help-action" data-i18n="mirror_flip">Mirror / flip horizontally</span>
+                    </div>
+                </div>
+
+                <h3 data-i18n="settings_panel">Settings Panel</h3>
+                <div class="help-description" data-i18n="settings_panel_description">
+                    Click the gear icon to access settings including font size, scroll speed, margins, line height, paragraph spacing, text alignment, and font family. Changes sync across all connected devices.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <!-- Mammoth.js for DOCX parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+
+    <script>
+        // Storage keys
+        const STORAGE_KEYS = {
+            TEXT: 'teleprompter_text',
+            SETTINGS: 'teleprompter_settings'
+        };
+
+        // Application state
+        const state = {
+            text: '',
+            is_playing: false,
+            scroll_position: 0,
+            pedal_value: 0,
+            settings: {
+                font_size: 48,
+                scroll_speed: 50,
+                scroll_step: 100,
+                margin_left: 10,
+                margin_right: 10,
+                line_height: 1.5,
+                paragraph_spacing: 1,
+                text_align: 'center',
+                font_family: 'system',
+                font_contrast: 100
+            }
+        };
+
+        // Local scroll position for smooth animation
+        let localScrollPosition = 0;
+        let targetScrollPosition = 0; // Target position for smooth wheel scrolling
+        let isLerpingToTarget = false; // True when smoothly animating toward target
+        let lastAnimationTime = 0;
+        let controlsTimeout = null;
+        let isConnected = false;
+        let permanentHud = null; // null = default (auto-hide), true = always show, false = always hide
+        let lastSyncTime = 0;
+        let isController = false; // True if this client is controlling playback
+        let lastReceivedPosition = 0;
+        let receivedPositionTime = 0;
+        const SYNC_INTERVAL_MS = 500; // Sync position every 500ms
+        const SYNC_COOLDOWN_MS = 600; // Don't sync right after receiving position
+        const SCROLL_LERP_FACTOR = 0.15; // Smoothing factor for wheel scroll (0-1, higher = faster)
+        const SCROLL_LERP_THRESHOLD = 0.5; // Stop lerping when within this many pixels of target
+        let rewindStartTime = 0; // Timestamp when pedal first hit -100 (for progressive rewind)
+        let pedalConfig = { speed_curve_gamma: 1.5 }; // Server-provided pedal config
+        const SPEED_LERP_FACTOR = 0.1; // Smoothing factor for pedal speed changes (0-1)
+        let smoothedPedalSpeed = 0; // Current smoothed pedal speed
+
+        // Admin / pedal debug state
+        let adminMode = false;
+        let adminPollTimer = null;
+
+        // Parse URL parameters
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+
+            // Parse DPI scale factor (accepts ?scale= or ?dpi=)
+            let scale = 1.0;
+            const scaleParam = params.get('scale') || params.get('dpi');
+            if (scaleParam !== null) {
+                const parsed = parseFloat(scaleParam);
+                if (!isNaN(parsed)) {
+                    // Clamp to valid range: 0.5 to 3.0
+                    scale = Math.max(0.5, Math.min(3.0, parsed));
+                }
+            }
+
+            // Parse HUD mode: null = default (auto-hide), true = always show, false = always hide
+            const hudParam = params.get('hud') ?? params.get('controls');
+            let hud = null;
+            if (hudParam === '1') hud = true;
+            else if (hudParam === '0') hud = false;
+
+            // Parse mirror/flip mode (accepts ?mirror=1 or ?flip=1)
+            const mirrorParam = params.get('mirror') ?? params.get('flip');
+            const mirror = mirrorParam === '1';
+
+            const admin = params.get('admin') === '1';
+
+            return {
+                hud: hud,
+                scale: scale,
+                mirror: mirror,
+                admin: admin
+            };
+        }
+
+        // DPI scale factor from URL (does not affect stored settings)
+        let dpiScale = 1.0;
+
+        // Mirror mode from URL (flips text horizontally for beam-splitter teleprompters)
+        let mirrorMode = false;
+
+        // Reference width for cross-browser scroll sync.
+        // All clients render at this width, then CSS scale() to fit viewport.
+        // This ensures identical offsetHeight across viewports so pixel-based
+        // scroll positions stay in sync.
+        const REFERENCE_WIDTH = 1920;
+
+        function updateViewportScale() {
+            const autoScale = window.innerWidth / REFERENCE_WIDTH;
+            const totalScale = autoScale * dpiScale;
+
+            const el = elements.teleprompter;
+            el.style.width = `${REFERENCE_WIDTH}px`;
+            el.style.height = `${window.innerHeight / totalScale}px`;
+            el.style.transform = `scale(${totalScale})`;
+            // Mirror the entire page (not just text) for beam-splitter teleprompters
+            document.body.style.transform = mirrorMode ? 'scaleX(-1)' : '';
+            el.style.transformOrigin = 'top left';
+        }
+
+        // DOM elements
+        const elements = {
+            teleprompter: document.getElementById('teleprompter'),
+            textContainer: document.getElementById('text-container'),
+            textContent: document.getElementById('text-content'),
+            instructions: document.getElementById('instructions'),
+            controls: document.getElementById('controls'),
+            playBtn: document.getElementById('play-btn'),
+            editModal: document.getElementById('edit-modal'),
+            textInput: document.getElementById('text-input'),
+            settingsPanel: document.getElementById('settings-panel'),
+            settingsBackdrop: document.getElementById('settings-backdrop'),
+            connectionStatus: document.getElementById('connection-status'),
+            fontSlider: document.getElementById('font-slider'),
+            speedSlider: document.getElementById('speed-slider'),
+            stepSlider: document.getElementById('step-slider'),
+            marginLeftSlider: document.getElementById('margin-left-slider'),
+            marginRightSlider: document.getElementById('margin-right-slider'),
+            lineHeightSlider: document.getElementById('line-height-slider'),
+            paragraphSpacingSlider: document.getElementById('paragraph-spacing-slider'),
+            textAlignButtons: document.getElementById('text-align-buttons'),
+            fontFamilySelect: document.getElementById('font-family-select'),
+            fontContrastSlider: document.getElementById('font-contrast-slider'),
+            fontValue: document.getElementById('font-value'),
+            speedValue: document.getElementById('speed-value'),
+            stepValue: document.getElementById('step-value'),
+            marginLeftValue: document.getElementById('margin-left-value'),
+            marginRightValue: document.getElementById('margin-right-value'),
+            lineHeightValue: document.getElementById('line-height-value'),
+            paragraphSpacingValue: document.getElementById('paragraph-spacing-value'),
+            fontContrastValue: document.getElementById('font-contrast-value'),
+            fileInput: document.getElementById('file-input')
+        };
+
+        // SVG icons for play/pause
+        const PLAY_ICON = '<svg class="icon-play" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+        const PAUSE_ICON = '<svg class="icon-pause" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>';
+
+        // Teleprompter client for SSE connection
+        class TeleprompterClient {
+            constructor() {
+                this.eventSource = null;
+                this.reconnectDelay = 1000;
+                this.maxReconnectDelay = 30000;
+            }
+
+            connect() {
+                if (this.eventSource) {
+                    this.eventSource.close();
+                }
+
+                this.eventSource = new EventSource(window.API_BASE + '/events');
+
+                this.eventSource.onopen = () => {
+                    this.onConnected();
+                    this.reconnectDelay = 1000;
+                };
+
+                this.eventSource.onerror = () => {
+                    this.onDisconnected();
+                    this.scheduleReconnect();
+                };
+
+                this.eventSource.onmessage = (e) => {
+                    try {
+                        const data = JSON.parse(e.data);
+                        this.onMessage(data);
+                    } catch (err) {
+                        console.error('Failed to parse message:', err);
+                    }
+                };
+            }
+
+            onConnected() {
+                isConnected = true;
+                elements.connectionStatus.classList.add('connected');
+                elements.connectionStatus.title = t('connection_connected');
+            }
+
+            onDisconnected() {
+                isConnected = false;
+                elements.connectionStatus.classList.remove('connected');
+                elements.connectionStatus.title = t('connection_disconnected');
+                if (this.eventSource) {
+                    this.eventSource.close();
+                    this.eventSource = null;
+                }
+            }
+
+            scheduleReconnect() {
+                setTimeout(() => {
+                    this.connect();
+                }, this.reconnectDelay);
+                this.reconnectDelay = Math.min(this.reconnectDelay * 2, this.maxReconnectDelay);
+            }
+
+            onMessage(data) {
+                switch (data.type) {
+                    case 'state':
+                        this.setState(data);
+                        break;
+                    case 'text':
+                        state.text = data.text;
+                        updateDisplay();
+                        saveToLocalStorage();
+                        break;
+                    case 'control':
+                        state.is_playing = data.is_playing;
+                        // Track pedal value for speed/direction
+                        if (data.hasOwnProperty('pedal_value')) {
+                            state.pedal_value = data.pedal_value;
+                        }
+                        // Sync scroll position if included
+                        if (data.hasOwnProperty('scroll_position')) {
+                            // If position changed significantly, another client is controlling
+                            const positionDiff = Math.abs(data.scroll_position - localScrollPosition);
+                            if (positionDiff > 50) {
+                                isController = false; // Another client is in control
+                            }
+                            // Use smooth scrolling to the new position
+                            state.scroll_position = data.scroll_position;
+                            targetScrollPosition = data.scroll_position;
+                            isLerpingToTarget = true;
+                            lastReceivedPosition = data.scroll_position;
+                            receivedPositionTime = performance.now();
+                        }
+                        updatePlayState();
+                        break;
+                    case 'settings':
+                        state.settings = { ...state.settings, ...data.settings };
+                        updateSettings();
+                        saveToLocalStorage();
+                        break;
+                    case 'scroll':
+                        // Smooth scroll to the received position
+                        state.scroll_position = data.scroll_position;
+                        targetScrollPosition = data.scroll_position;
+                        isLerpingToTarget = true;
+                        // Mark that we received a position update (for sync cooldown)
+                        lastReceivedPosition = data.scroll_position;
+                        receivedPositionTime = performance.now();
+                        // Another client is controlling
+                        isController = false;
+                        break;
+                }
+            }
+
+            setState(data) {
+                if (data.text !== undefined) {
+                    state.text = data.text;
+                }
+                if (data.is_playing !== undefined) {
+                    state.is_playing = data.is_playing;
+                }
+                if (data.pedal_value !== undefined) {
+                    state.pedal_value = data.pedal_value;
+                }
+                if (data.scroll_position !== undefined) {
+                    state.scroll_position = data.scroll_position;
+                    // For initial state, jump directly (no lerp)
+                    localScrollPosition = data.scroll_position;
+                    targetScrollPosition = data.scroll_position;
+                }
+                if (data.settings) {
+                    state.settings = { ...state.settings, ...data.settings };
+                }
+                if (data.pedal_config) {
+                    pedalConfig = { ...pedalConfig, ...data.pedal_config };
+                }
+                updateDisplay();
+                updatePlayState();
+                updateSettings();
+                saveToLocalStorage();
+            }
+
+            async setText(text) {
+                try {
+                    await fetch(window.API_BASE + '/text', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text })
+                    });
+                } catch (err) {
+                    console.error('Failed to set text:', err);
+                }
+            }
+
+            async sendControl(action, delta = null, position = null) {
+                try {
+                    const body = { action };
+                    if (delta !== null) body.delta = delta;
+                    if (position !== null) body.position = position;
+                    await fetch(window.API_BASE + '/control', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body)
+                    });
+                } catch (err) {
+                    console.error('Failed to send control:', err);
+                }
+            }
+
+            async syncPosition(position) {
+                try {
+                    await fetch(window.API_BASE + '/control', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'sync', position })
+                    });
+                } catch (err) {
+                    console.error('Failed to sync position:', err);
+                }
+            }
+
+            async updateSettings(settings) {
+                try {
+                    await fetch(window.API_BASE + '/settings', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(settings)
+                    });
+                } catch (err) {
+                    console.error('Failed to update settings:', err);
+                }
+            }
+        }
+
+        const client = new TeleprompterClient();
+
+        // Rich text paste handler
+        function sanitizeHtml(html) {
+            const allowedTags = ['b', 'strong', 'i', 'em', 'u', 'p', 'br', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote'];
+            const div = document.createElement('div');
+            div.innerHTML = html;
+
+            function clean(node) {
+                const nodesToRemove = [];
+                for (const child of node.childNodes) {
+                    if (child.nodeType === Node.ELEMENT_NODE) {
+                        const tagName = child.tagName.toLowerCase();
+                        if (!allowedTags.includes(tagName)) {
+                            nodesToRemove.push(child);
+                        } else {
+                            // Remove all attributes
+                            while (child.attributes.length > 0) {
+                                child.removeAttribute(child.attributes[0].name);
+                            }
+                            clean(child);
+                        }
+                    }
+                }
+                for (const n of nodesToRemove) {
+                    while (n.firstChild) {
+                        n.parentNode.insertBefore(n.firstChild, n);
+                    }
+                    n.parentNode.removeChild(n);
+                }
+            }
+
+            clean(div);
+            return div.innerHTML;
+        }
+
+        // Local storage functions
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEYS.TEXT, state.text);
+                localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(state.settings));
+            } catch (err) {
+                console.error('Failed to save to localStorage:', err);
+            }
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                const text = localStorage.getItem(STORAGE_KEYS.TEXT);
+                const settings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+                if (text) {
+                    state.text = text;
+                }
+                if (settings) {
+                    state.settings = { ...state.settings, ...JSON.parse(settings) };
+                }
+            } catch (err) {
+                console.error('Failed to load from localStorage:', err);
+            }
+        }
+
+        // Display update functions
+        function updateDisplay() {
+            elements.textContent.innerHTML = state.text;
+
+            if (state.text.trim()) {
+                elements.instructions.classList.add('hidden');
+            } else {
+                elements.instructions.classList.remove('hidden');
+            }
+
+            updateCSSVariables();
+        }
+
+        function updatePlayState() {
+            elements.playBtn.innerHTML = state.is_playing ? PAUSE_ICON : PLAY_ICON;
+            elements.playBtn.title = state.is_playing ? t('pause_title') : t('play_title');
+
+            // Pedal gauge
+            const gauge = document.getElementById('pedal-gauge');
+            const fill = document.getElementById('pedal-gauge-fill');
+            if (gauge && fill) {
+                const v = state.pedal_value;
+                gauge.classList.toggle('visible', v !== 0);
+                fill.classList.remove('forward', 'reverse');
+                if (v > 0) {
+                    fill.classList.add('forward');
+                    fill.style.height = `${Math.abs(v) / 2}%`;
+                    fill.style.top = '';
+                    fill.style.bottom = '50%';
+                } else if (v < 0) {
+                    fill.classList.add('reverse');
+                    fill.style.height = `${Math.abs(v) / 2}%`;
+                    fill.style.top = '50%';
+                    fill.style.bottom = '';
+                } else {
+                    fill.style.height = '0%';
+                }
+            }
+
+            updatePedalDebug();
+        }
+
+        function updatePedalDebug() {
+            if (!adminMode) return;
+            const line = document.getElementById('pedal-active-line');
+            if (line) {
+                const v = state.pedal_value;
+                const dir = v > 0 ? 'forward' : v < 0 ? 'reverse' : 'stopped';
+                line.textContent = `active: ${dir} | pedal_value: ${v} | playing: ${state.is_playing}`;
+            }
+        }
+
+        function formatAgo(isoStr) {
+            if (!isoStr) return '--';
+            const ms = Date.now() - new Date(isoStr).getTime();
+            if (isNaN(ms) || ms < 0) return '--';
+            if (ms < 1000) return 'now';
+            if (ms < 60000) return Math.floor(ms / 1000) + 's ago';
+            if (ms < 3600000) return Math.floor(ms / 60000) + 'm ago';
+            return Math.floor(ms / 3600000) + 'h ago';
+        }
+
+        function updatePedalRow(id, ch) {
+            const row = document.getElementById(id);
+            if (!row) return;
+            const cells = row.cells;
+            const on = ch.connected;
+            cells[1].textContent = on ? (ch.port ? ch.port : 'connected') : 'off';
+            cells[1].className = on ? 'status-on' : 'status-off';
+            const v = ch.last_value;
+            cells[2].textContent = v !== null ? v : '--';
+            cells[2].className = (v !== null && v !== 0) ? 'value-active' : 'value-zero';
+            cells[3].textContent = ch.count;
+            cells[4].textContent = formatAgo(ch.last_time);
+        }
+
+        async function pollPedalStatus() {
+            try {
+                const resp = await fetch(window.API_BASE + '/status');
+                const data = await resp.json();
+                if (data.pedal) {
+                    updatePedalRow('pedal-row-mqtt', data.pedal.mqtt);
+                    updatePedalRow('pedal-row-serial', data.pedal.serial);
+                    updatePedalRow('pedal-row-http', data.pedal.http);
+                }
+            } catch (e) { }
+        }
+
+        function updateSettings() {
+            const s = state.settings;
+
+            // Update sliders and selects
+            elements.fontSlider.value = s.font_size;
+            elements.speedSlider.value = s.scroll_speed;
+            elements.stepSlider.value = s.scroll_step;
+            elements.marginLeftSlider.value = s.margin_left;
+            elements.marginRightSlider.value = s.margin_right;
+            elements.lineHeightSlider.value = s.line_height;
+            elements.paragraphSpacingSlider.value = s.paragraph_spacing;
+            // Update text align buttons
+            elements.textAlignButtons.querySelectorAll('button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.align === s.text_align);
+            });
+            elements.fontFamilySelect.value = s.font_family;
+            elements.fontContrastSlider.value = s.font_contrast;
+
+            // Update value labels
+            elements.fontValue.textContent = s.font_size;
+            elements.speedValue.textContent = s.scroll_speed;
+            elements.stepValue.textContent = s.scroll_step;
+            elements.marginLeftValue.textContent = s.margin_left;
+            elements.marginRightValue.textContent = s.margin_right;
+            elements.lineHeightValue.textContent = s.line_height;
+            elements.paragraphSpacingValue.textContent = s.paragraph_spacing;
+            elements.fontContrastValue.textContent = s.font_contrast;
+
+            updateCSSVariables();
+        }
+
+        // Font family mapping from setting value to CSS font-family stack
+        const FONT_FAMILY_MAP = {
+            'system': "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+            'serif': "Georgia, 'Times New Roman', Times, serif",
+            'sans-serif': "Arial, Helvetica, sans-serif",
+            'monospace': "'Courier New', Consolas, monospace",
+            'Georgia': "Georgia, serif",
+            'Arial': "Arial, Helvetica, sans-serif",
+            'Verdana': "Verdana, Geneva, sans-serif",
+            'Times New Roman': "'Times New Roman', Times, serif"
+        };
+
+        function updateCSSVariables() {
+            const s = state.settings;
+            // dpiScale is now handled by updateViewportScale() transform, not font size
+            document.documentElement.style.setProperty('--font-size', `${s.font_size}px`);
+            document.documentElement.style.setProperty('--margin-left', `${s.margin_left}%`);
+            document.documentElement.style.setProperty('--margin-right', `${s.margin_right}%`);
+            document.documentElement.style.setProperty('--line-height', s.line_height);
+            document.documentElement.style.setProperty('--paragraph-spacing', `${s.paragraph_spacing}em`);
+            document.documentElement.style.setProperty('--text-align', s.text_align);
+            document.documentElement.style.setProperty('--font-family', FONT_FAMILY_MAP[s.font_family] || FONT_FAMILY_MAP['system']);
+            const c = Math.round(s.font_contrast * 2.55);
+            document.documentElement.style.setProperty('--text-color', `rgb(${c}, ${c}, ${c})`);
+        }
+
+        function updateScrollDisplay() {
+            elements.textContainer.style.setProperty('--scroll-offset', `${-localScrollPosition}px`);
+        }
+
+        // Animation loop
+        function animationLoop(currentTime) {
+            if (!lastAnimationTime) {
+                lastAnimationTime = currentTime;
+            }
+            const deltaTime = (currentTime - lastAnimationTime) / 1000;
+            lastAnimationTime = currentTime;
+
+            // Handle smooth scrolling toward target (from wheel events)
+            if (isLerpingToTarget) {
+                const diff = targetScrollPosition - localScrollPosition;
+                if (Math.abs(diff) < SCROLL_LERP_THRESHOLD) {
+                    // Close enough, snap to target
+                    localScrollPosition = targetScrollPosition;
+                    isLerpingToTarget = false;
+                } else {
+                    // Lerp toward target
+                    localScrollPosition += diff * SCROLL_LERP_FACTOR;
+                }
+                state.scroll_position = localScrollPosition;
+                updateScrollDisplay();
+
+                // Sync position while lerping (if we're controlling)
+                const timeSinceReceived = currentTime - receivedPositionTime;
+                if (isConnected && isController &&
+                    currentTime - lastSyncTime > SYNC_INTERVAL_MS &&
+                    timeSinceReceived > SYNC_COOLDOWN_MS) {
+                    lastSyncTime = currentTime;
+                    client.syncPosition(Math.round(localScrollPosition));
+                }
+            }
+
+            if (state.is_playing) {
+                // When playing, update target too so wheel scroll stays consistent
+                if (!isLerpingToTarget) {
+                    targetScrollPosition = localScrollPosition;
+                }
+
+                // Calculate effective speed: pedal overrides direction and magnitude
+                let effectiveSpeed;
+                if (state.pedal_value !== 0) {
+                    // Pedal active: apply speed curve then scale by base speed
+                    const normalized = Math.abs(state.pedal_value) / 100;
+                    const gamma = pedalConfig.speed_curve_gamma || 1.5;
+                    const curved = Math.pow(normalized, gamma);
+                    let targetSpeed = Math.sign(state.pedal_value) * curved * state.settings.scroll_speed;
+
+                    // Progressive rewind: when pedal is near full reverse (≤ -95),
+                    // ramp up reverse speed over time to quickly return to top.
+                    // Threshold handles analog noise (pedal fluctuates near -100).
+                    if (state.pedal_value <= -95) {
+                        if (rewindStartTime === 0) rewindStartTime = currentTime;
+                        const elapsed = (currentTime - rewindStartTime) / 1000;
+                        // Ease-in cubic: 1 → 20x over 5 seconds
+                        const t = Math.min(elapsed / 5, 1);
+                        const multiplier = 1 + 19 * t * t * t;
+                        targetSpeed *= multiplier;
+                    } else {
+                        rewindStartTime = 0;
+                    }
+
+                    // Smooth speed transitions to prevent jarring acceleration
+                    smoothedPedalSpeed += (targetSpeed - smoothedPedalSpeed) * SPEED_LERP_FACTOR;
+                    effectiveSpeed = smoothedPedalSpeed;
+                } else {
+                    // Normal playback: always forward at configured speed
+                    smoothedPedalSpeed = 0;
+                    effectiveSpeed = state.settings.scroll_speed;
+                    rewindStartTime = 0;
+                }
+
+                localScrollPosition += effectiveSpeed * deltaTime;
+                targetScrollPosition += effectiveSpeed * deltaTime;
+
+                // Clamp scroll position (no negative, no past end)
+                const maxScroll = getMaxScroll();
+                if (localScrollPosition < 0) {
+                    localScrollPosition = 0;
+                    targetScrollPosition = 0;
+                }
+                if (localScrollPosition > maxScroll) {
+                    localScrollPosition = maxScroll;
+                    targetScrollPosition = maxScroll;
+                }
+
+                state.scroll_position = localScrollPosition;
+                updateScrollDisplay();
+
+                // Periodically sync position to server (only if we're the controller)
+                // and not right after receiving a position update (cooldown)
+                const timeSinceReceived = currentTime - receivedPositionTime;
+                if (isConnected && isController &&
+                    currentTime - lastSyncTime > SYNC_INTERVAL_MS &&
+                    timeSinceReceived > SYNC_COOLDOWN_MS) {
+                    lastSyncTime = currentTime;
+                    client.syncPosition(Math.round(localScrollPosition));
+                }
+            }
+
+            requestAnimationFrame(animationLoop);
+        }
+
+        // Control functions
+        function togglePlay() {
+            state.is_playing = !state.is_playing;
+            isController = true; // This client is now controlling
+            updatePlayState();
+            if (isConnected) {
+                // Send current position with play/pause so all clients sync
+                client.sendControl(state.is_playing ? 'play' : 'pause', null, localScrollPosition);
+            }
+        }
+
+        function bumpUp() {
+            const delta = -state.settings.scroll_step;
+            isController = true;
+            // Use smooth scrolling for keyboard bumps too
+            if (!isLerpingToTarget) {
+                targetScrollPosition = localScrollPosition;
+            }
+            targetScrollPosition = Math.max(0, targetScrollPosition + delta);
+            isLerpingToTarget = true;
+            state.scroll_position = targetScrollPosition;
+            if (isConnected) {
+                client.sendControl('sync', null, Math.round(targetScrollPosition));
+            }
+        }
+
+        function getMaxScroll() {
+            return Math.max(0, elements.textContent.offsetHeight);
+        }
+
+        function bumpDown() {
+            const delta = state.settings.scroll_step;
+            const maxScroll = getMaxScroll();
+            isController = true;
+            // Use smooth scrolling for keyboard bumps too
+            if (!isLerpingToTarget) {
+                targetScrollPosition = localScrollPosition;
+            }
+            targetScrollPosition = Math.min(maxScroll, targetScrollPosition + delta);
+            isLerpingToTarget = true;
+            state.scroll_position = targetScrollPosition;
+            if (isConnected) {
+                client.sendControl('sync', null, Math.round(targetScrollPosition));
+            }
+        }
+
+        function speedUp() {
+            state.settings.scroll_speed = Math.min(500, state.settings.scroll_speed + 10);
+            updateSettings();
+            saveToLocalStorage();
+            if (isConnected) {
+                client.updateSettings({ scroll_speed: state.settings.scroll_speed });
+            }
+        }
+
+        function speedDown() {
+            state.settings.scroll_speed = Math.max(5, state.settings.scroll_speed - 10);
+            updateSettings();
+            saveToLocalStorage();
+            if (isConnected) {
+                client.updateSettings({ scroll_speed: state.settings.scroll_speed });
+            }
+        }
+
+        function fontUp() {
+            state.settings.font_size = Math.min(200, state.settings.font_size + 4);
+            updateSettings();
+            saveToLocalStorage();
+            if (isConnected) {
+                client.updateSettings({ font_size: state.settings.font_size });
+            }
+        }
+
+        function fontDown() {
+            state.settings.font_size = Math.max(12, state.settings.font_size - 4);
+            updateSettings();
+            saveToLocalStorage();
+            if (isConnected) {
+                client.updateSettings({ font_size: state.settings.font_size });
+            }
+        }
+
+        function resetScroll() {
+            localScrollPosition = 0;
+            targetScrollPosition = 0;
+            state.scroll_position = 0;
+            isLerpingToTarget = false; // Stop any smooth scrolling
+            isController = true; // Taking control
+            updateScrollDisplay();
+            if (isConnected) {
+                client.sendControl('reset');
+            }
+        }
+
+        // Modal functions
+        function openEditModal() {
+            elements.textInput.innerHTML = state.text;
+            elements.editModal.classList.remove('hidden');
+            elements.editModal.classList.add('visible');
+            elements.textInput.focus();
+        }
+
+        function closeEditModal() {
+            elements.editModal.classList.remove('visible');
+            setTimeout(() => {
+                elements.editModal.classList.add('hidden');
+            }, 200);
+        }
+
+        function saveText() {
+            const text = elements.textInput.innerHTML;
+            state.text = text;
+            updateDisplay();
+            saveToLocalStorage();
+            closeEditModal();
+            if (isConnected) {
+                client.setText(text);
+            }
+        }
+
+        function clearText() {
+            elements.textInput.innerHTML = '';
+        }
+
+        // Rich text formatting functions
+        function formatBold() {
+            document.execCommand('bold', false, null);
+            elements.textInput.focus();
+        }
+
+        function formatItalic() {
+            document.execCommand('italic', false, null);
+            elements.textInput.focus();
+        }
+
+        function formatClear() {
+            document.execCommand('removeFormat', false, null);
+            elements.textInput.focus();
+        }
+
+        // File loading functions
+        async function handleFileLoad(file) {
+            const ext = file.name.split('.').pop().toLowerCase();
+
+            try {
+                if (ext === 'txt') {
+                    const text = await file.text();
+                    // Convert plain text to HTML (preserve line breaks)
+                    const htmlText = text.replace(/\n/g, '<br>');
+                    state.text = htmlText;
+                } else if (ext === 'docx') {
+                    if (typeof mammoth === 'undefined') {
+                        console.error('Mammoth.js not loaded');
+                        return;
+                    }
+                    const arrayBuffer = await file.arrayBuffer();
+                    const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
+                    // Sanitize the HTML from mammoth
+                    state.text = sanitizeHtml(result.value);
+                } else if (ext === 'rtf') {
+                    const text = await file.text();
+                    // Basic RTF to plain text conversion
+                    const plainText = parseRtf(text);
+                    const htmlText = plainText.replace(/\n/g, '<br>');
+                    state.text = htmlText;
+                }
+
+                updateDisplay();
+                saveToLocalStorage();
+                if (isConnected) {
+                    client.setText(state.text);
+                }
+
+                // If edit modal is open, update it too
+                if (elements.editModal.classList.contains('visible')) {
+                    elements.textInput.innerHTML = state.text;
+                }
+            } catch (err) {
+                console.error('Failed to load file:', err);
+            }
+        }
+
+        // Basic RTF parser - strips RTF formatting and extracts plain text
+        function parseRtf(rtf) {
+            // Remove RTF header and control words
+            let text = rtf
+                .replace(/\\par[d]?/g, '\n')  // Paragraphs to newlines
+                .replace(/\\line/g, '\n')      // Line breaks
+                .replace(/\\tab/g, '\t')       // Tabs
+                .replace(/\\'([0-9a-fA-F]{2})/g, (match, hex) => String.fromCharCode(parseInt(hex, 16))) // Hex chars
+                .replace(/\\u([0-9]+)\\?/g, (match, code) => String.fromCharCode(parseInt(code))) // Unicode
+                .replace(/\{[^{}]*\}/g, '')    // Remove nested groups
+                .replace(/\\[a-z]+[0-9]*/gi, '') // Remove control words
+                .replace(/[{}]/g, '')          // Remove remaining braces
+                .replace(/\r\n/g, '\n')        // Normalize line endings
+                .replace(/\n{3,}/g, '\n\n')    // Max 2 consecutive newlines
+                .trim();
+            return text;
+        }
+
+        function triggerFileInput() {
+            elements.fileInput.click();
+        }
+
+        function loadSampleText() {
+            fetch(window.API_BASE + '/sample')
+                .then(r => { if (!r.ok) throw new Error('Failed to load sample'); return r.text(); })
+                .then(text => {
+                    const html = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                        .replace(/\n\n/g, '</div><div><br></div><div>')
+                        .replace(/\n/g, '</div><div>');
+                    elements.textInput.innerHTML = '<div>' + html + '</div>';
+                })
+                .catch(err => console.error('Load sample failed:', err));
+        }
+
+        // Settings panel functions
+        function openSettings() {
+            elements.settingsPanel.classList.add('visible');
+            elements.settingsBackdrop.classList.remove('hidden');
+            elements.settingsBackdrop.classList.add('visible');
+        }
+
+        function closeSettings() {
+            elements.settingsPanel.classList.remove('visible');
+            elements.settingsBackdrop.classList.remove('visible');
+            setTimeout(() => {
+                elements.settingsBackdrop.classList.add('hidden');
+            }, 200);
+        }
+
+        function resetDefaults() {
+            state.settings.font_size = 48;
+            state.settings.scroll_speed = 50;
+            state.settings.scroll_step = 100;
+            state.settings.margin_left = 10;
+            state.settings.margin_right = 10;
+            state.settings.line_height = 1.5;
+            state.settings.paragraph_spacing = 1;
+            state.settings.text_align = 'center';
+            state.settings.font_family = 'system';
+            state.settings.font_contrast = 100;
+            updateSettings();
+            saveToLocalStorage();
+            if (isConnected) {
+                client.updateSettings(state.settings);
+            }
+        }
+
+        // QR Code modal functions
+        function openQrModal() {
+            const overlay = document.getElementById('qr-overlay');
+            const container = document.getElementById('qr-code-container');
+            const urlDisplay = document.getElementById('qr-url');
+
+            // Share URL = current room's /remote (works locally and through cloudflared)
+            Promise.resolve()
+                .then(() => {
+                    const url = window.location.origin + window.API_BASE + '/remote';
+                    urlDisplay.textContent = url;
+                    container.innerHTML = '';
+
+                    // Generate QR code
+                    if (typeof qrcode !== 'undefined') {
+                        const qr = qrcode(0, 'M');
+                        qr.addData(url);
+                        qr.make();
+                        container.innerHTML = qr.createImgTag(5, 0);
+                    } else {
+                        container.innerHTML = '<div style="padding: 20px; color: #666;">' + t('qr_library_error') + '</div>';
+                    }
+                })
+                .catch(err => {
+                    // Fallback to current URL if status fails
+                    const url = window.location.origin + window.API_BASE + '/remote';
+                    urlDisplay.textContent = url;
+                    container.innerHTML = '';
+
+                    if (typeof qrcode !== 'undefined') {
+                        const qr = qrcode(0, 'M');
+                        qr.addData(url);
+                        qr.make();
+                        container.innerHTML = qr.createImgTag(5, 0);
+                    }
+                });
+
+            overlay.classList.remove('hidden');
+            overlay.classList.add('visible');
+        }
+
+        function closeQrModal() {
+            const overlay = document.getElementById('qr-overlay');
+            overlay.classList.remove('visible');
+            setTimeout(() => overlay.classList.add('hidden'), 200);
+        }
+
+        // Help modal functions
+        function openHelpModal() {
+            const overlay = document.getElementById('help-overlay');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('visible');
+        }
+
+        function closeHelpModal() {
+            const overlay = document.getElementById('help-overlay');
+            overlay.classList.remove('visible');
+            setTimeout(() => overlay.classList.add('hidden'), 200);
+        }
+
+        // Controls visibility
+        function showControls() {
+            // Never show controls if HUD is permanently hidden
+            if (permanentHud === false) return;
+            elements.controls.classList.add('visible');
+            clearTimeout(controlsTimeout);
+            // Only auto-hide if not in permanent HUD mode
+            if (permanentHud !== true) {
+                controlsTimeout = setTimeout(() => {
+                    elements.controls.classList.remove('visible');
+                }, 3000);
+            }
+        }
+
+        // Keyboard shortcuts
+        const SHORTCUTS = {
+            ' ': 'togglePlay',
+            'ArrowUp': 'speedUp',
+            'ArrowDown': 'speedDown',
+            'ArrowLeft': 'bumpUp',
+            'ArrowRight': 'bumpDown',
+            'Escape': 'resetScroll',
+            '+': 'fontUp',
+            '=': 'fontUp',
+            '-': 'fontDown'
+        };
+
+        const shortcutHandlers = {
+            togglePlay,
+            bumpUp,
+            bumpDown,
+            speedUp,
+            speedDown,
+            fontUp,
+            fontDown,
+            resetScroll
+        };
+
+        // Event listeners
+        document.addEventListener('keydown', (e) => {
+            // Close modals with Escape
+            if (e.key === 'Escape') {
+                const helpOverlay = document.getElementById('help-overlay');
+                const qrOverlay = document.getElementById('qr-overlay');
+                if (helpOverlay.classList.contains('visible')) {
+                    closeHelpModal();
+                    e.preventDefault();
+                    return;
+                }
+                if (qrOverlay.classList.contains('visible')) {
+                    closeQrModal();
+                    e.preventDefault();
+                    return;
+                }
+                // Close edit modal with Escape
+                if (elements.editModal.classList.contains('visible')) {
+                    closeEditModal();
+                    e.preventDefault();
+                    return;
+                }
+            }
+
+            // Don't handle shortcuts when typing in input or contenteditable
+            if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT' || e.target.isContentEditable) {
+                return;
+            }
+
+            const action = SHORTCUTS[e.key];
+            if (action && shortcutHandlers[action]) {
+                e.preventDefault();
+                shortcutHandlers[action]();
+                showControls();
+            }
+        });
+
+        // Button event listeners
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            resetScroll();
+            showControls();
+        });
+
+        document.getElementById('play-btn').addEventListener('click', () => {
+            togglePlay();
+            showControls();
+        });
+
+        document.getElementById('edit-btn').addEventListener('click', openEditModal);
+        document.getElementById('edit-btn-main').addEventListener('click', openEditModal);
+        document.getElementById('settings-btn').addEventListener('click', openSettings);
+
+        document.getElementById('save-text').addEventListener('click', saveText);
+        document.getElementById('cancel-edit').addEventListener('click', closeEditModal);
+        document.getElementById('clear-text').addEventListener('click', clearText);
+        document.getElementById('close-edit-x').addEventListener('click', closeEditModal);
+        document.getElementById('modal-load-sample-btn').addEventListener('click', loadSampleText);
+
+        // Format toolbar buttons
+        document.getElementById('format-bold').addEventListener('click', formatBold);
+        document.getElementById('format-italic').addEventListener('click', formatItalic);
+        document.getElementById('format-clear').addEventListener('click', formatClear);
+
+        // File loading
+        document.getElementById('load-file-btn').addEventListener('click', triggerFileInput);
+        document.getElementById('modal-load-file-btn').addEventListener('click', triggerFileInput);
+        elements.fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                handleFileLoad(e.target.files[0]);
+                e.target.value = ''; // Reset so same file can be loaded again
+            }
+        });
+
+        document.getElementById('close-settings').addEventListener('click', closeSettings);
+        document.getElementById('close-settings-x').addEventListener('click', closeSettings);
+        document.getElementById('settings-backdrop').addEventListener('click', closeSettings);
+        document.getElementById('reset-defaults').addEventListener('click', resetDefaults);
+
+        // QR modal event listeners
+        document.getElementById('qr-btn').addEventListener('click', openQrModal);
+        document.getElementById('qr-close').addEventListener('click', closeQrModal);
+        document.getElementById('qr-overlay').addEventListener('click', (e) => {
+            if (e.target.id === 'qr-overlay') closeQrModal();
+        });
+        // Click URL to copy
+        document.getElementById('qr-url').addEventListener('click', function() {
+            const url = this.textContent;
+            navigator.clipboard.writeText(url).then(() => {
+                const original = this.textContent;
+                this.textContent = t('copied');
+                setTimeout(() => { this.textContent = original; }, 1500);
+            });
+        });
+
+        // Help modal event listeners
+        document.getElementById('help-btn').addEventListener('click', openHelpModal);
+        document.getElementById('help-close').addEventListener('click', closeHelpModal);
+        document.getElementById('help-overlay').addEventListener('click', (e) => {
+            if (e.target.id === 'help-overlay') closeHelpModal();
+        });
+
+        // Settings sliders
+        elements.fontSlider.addEventListener('input', (e) => {
+            state.settings.font_size = parseInt(e.target.value);
+            updateSettings();
+        });
+
+        elements.fontSlider.addEventListener('change', () => {
+            saveToLocalStorage();
+            if (isConnected) {
+                client.updateSettings({ font_size: state.settings.font_size });
+            }
+        });
+
+        elements.speedSlider.addEventListener('input', (e) => {
+            state.settings.scroll_speed = parseInt(e.target.value);
+            updateSettings();
+        });
+
+        elements.speedSlider.addEventListener('change', () => {
+            saveToLocalStorage();
+            if (isConnected) {
+                client.updateSettings({ scroll_speed: state.settings.scroll_speed });
+            }
+        });
+
+        elements.stepSlider.addEventListener('input', (e) => {
+            state.settings.scroll_step = parseInt(e.target.value);
+            updateSettings();
+        });
+
+        elements.stepSlider.addEventListener('change', () => {
+            saveToLocalStorage();
+            if (isConnected) {
+                client.updateSettings({ scroll_step: state.settings.scroll_step });
+            }
+        });
+
+        elements.marginLeftSlider.addEventListener('input', (e) => {
+            state.settings.margin_left = parseInt(e.target.value);
+            updateSettings();
+        });
+
+        elements.marginLeftSlider.addEventListener('change', () => {
+            saveToLocalStorage();
+            if (isConnected) {
+                client.updateSettings({ margin_left: state.settings.margin_left });
+            }
+        });
+
+        elements.marginRightSlider.addEventListener('input', (e) => {
+            state.settings.margin_right = parseInt(e.target.value);
+            updateSettings();
+        });
+
+        elements.marginRightSlider.addEventListener('change', () => {
+            saveToLocalStorage();
+            if (isConnected) {
+                client.updateSettings({ margin_right: state.settings.margin_right });
+            }
+        });
+
+        elements.lineHeightSlider.addEventListener('input', (e) => {
+            state.settings.line_height = parseFloat(e.target.value);
+            updateSettings();
+        });
+
+        elements.lineHeightSlider.addEventListener('change', () => {
+            saveToLocalStorage();
+            if (isConnected) {
+                client.updateSettings({ line_height: state.settings.line_height });
+            }
+        });
+
+        elements.paragraphSpacingSlider.addEventListener('input', (e) => {
+            state.settings.paragraph_spacing = parseFloat(e.target.value);
+            updateSettings();
+        });
+
+        elements.paragraphSpacingSlider.addEventListener('change', () => {
+            saveToLocalStorage();
+            if (isConnected) {
+                client.updateSettings({ paragraph_spacing: state.settings.paragraph_spacing });
+            }
+        });
+
+        elements.textAlignButtons.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                state.settings.text_align = btn.dataset.align;
+                updateSettings();
+                saveToLocalStorage();
+                if (isConnected) {
+                    client.updateSettings({ text_align: state.settings.text_align });
+                }
+            });
+        });
+
+        elements.fontFamilySelect.addEventListener('change', (e) => {
+            state.settings.font_family = e.target.value;
+            updateSettings();
+            saveToLocalStorage();
+            if (isConnected) {
+                client.updateSettings({ font_family: state.settings.font_family });
+            }
+        });
+
+        elements.fontContrastSlider.addEventListener('input', (e) => {
+            state.settings.font_contrast = parseInt(e.target.value);
+            updateSettings();
+        });
+
+        elements.fontContrastSlider.addEventListener('change', () => {
+            saveToLocalStorage();
+            if (isConnected) {
+                client.updateSettings({ font_contrast: state.settings.font_contrast });
+            }
+        });
+
+        // Paste handler for rich text editor (contenteditable)
+        elements.textInput.addEventListener('paste', (e) => {
+            const clipboardData = e.clipboardData || window.clipboardData;
+            const html = clipboardData.getData('text/html');
+            const text = clipboardData.getData('text/plain');
+
+            if (html && html.trim()) {
+                e.preventDefault();
+                const content = sanitizeHtml(html);
+                document.execCommand('insertHTML', false, content);
+            } else if (text) {
+                // Convert plain text to HTML, preserving line breaks
+                e.preventDefault();
+                const tempDiv = document.createElement('div');
+                tempDiv.textContent = text;
+                const content = tempDiv.innerHTML.replace(/\n/g, '<br>');
+                document.execCommand('insertHTML', false, content);
+            }
+        });
+
+        // Keyboard shortcuts in contenteditable editor
+        elements.textInput.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                if (e.key === 'b') {
+                    e.preventDefault();
+                    formatBold();
+                } else if (e.key === 'i') {
+                    e.preventDefault();
+                    formatItalic();
+                }
+            }
+        });
+
+        // Global paste handler (when not in textarea)
+        document.addEventListener('paste', (e) => {
+            // Skip if pasting into input, textarea, or contenteditable
+            if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT' || e.target.isContentEditable) {
+                return;
+            }
+
+            const clipboardData = e.clipboardData || window.clipboardData;
+            const html = clipboardData.getData('text/html');
+            const text = clipboardData.getData('text/plain');
+
+            if (html || text) {
+                e.preventDefault();
+                let content;
+
+                if (html && html.trim()) {
+                    // Use sanitized HTML
+                    content = sanitizeHtml(html);
+                } else if (text) {
+                    // Convert plain text to HTML, preserving line breaks
+                    // Create a text node and extract its properly escaped content
+                    const tempDiv = document.createElement('div');
+                    tempDiv.textContent = text;
+                    content = tempDiv.innerHTML.replace(/\n/g, '<br>');
+                }
+
+                if (content) {
+                    state.text = content;
+                    updateDisplay();
+                    saveToLocalStorage();
+                    if (isConnected) {
+                        client.setText(content);
+                    }
+                }
+            }
+        });
+
+        // Touch/mouse events for controls visibility
+        document.addEventListener('mousemove', showControls);
+        document.addEventListener('touchstart', showControls);
+        elements.teleprompter.addEventListener('click', (e) => {
+            if (e.target === elements.teleprompter || e.target === elements.textContainer || e.target === elements.textContent) {
+                togglePlay();
+                showControls();
+            }
+        });
+
+        // Mouse wheel scrolling with smooth animation
+        document.addEventListener('wheel', (e) => {
+            // Don't intercept wheel events over settings panel or modals
+            const settingsPanel = document.getElementById('settings-panel');
+            const editModal = document.getElementById('edit-modal');
+            const qrOverlay = document.getElementById('qr-overlay');
+            const helpOverlay = document.getElementById('help-overlay');
+
+            if (settingsPanel.contains(e.target) && settingsPanel.classList.contains('visible')) {
+                return;
+            }
+            if (editModal.contains(e.target) && !editModal.classList.contains('hidden')) {
+                return;
+            }
+            if (qrOverlay.contains(e.target) && qrOverlay.classList.contains('visible')) {
+                return;
+            }
+            if (helpOverlay.contains(e.target) && helpOverlay.classList.contains('visible')) {
+                return;
+            }
+
+            e.preventDefault();
+
+            // This client is now controlling via wheel scroll
+            isController = true;
+
+            // Calculate scroll amount proportional to wheel delta
+            // Typical wheel delta is around 100-120 per notch, normalize to ~100px scroll per notch
+            const scrollAmount = e.deltaY * (100 / 100);
+            const maxScroll = getMaxScroll();
+
+            // Update target position for smooth scrolling (lerp in animation loop)
+            // If not currently lerping, sync target to current position first
+            if (!isLerpingToTarget) {
+                targetScrollPosition = localScrollPosition;
+            }
+            targetScrollPosition = Math.max(0, Math.min(maxScroll, targetScrollPosition + scrollAmount));
+            isLerpingToTarget = true;
+
+            // Sync target position to all connected clients
+            // Send the target position so other clients also smoothly animate to it
+            if (isConnected) {
+                client.sendControl('sync', null, Math.round(targetScrollPosition));
+            }
+
+            showControls();
+        }, { passive: false });
+
+        // Apply translations to all elements with data-i18n attributes
+        function applyTranslations() {
+            // Update page title
+            document.title = t('page_title');
+
+            // Update html lang attribute
+            document.documentElement.lang = currentLang;
+
+            // Translate elements with data-i18n attribute (text content)
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = t(key);
+            });
+
+            // Translate elements with data-i18n-title attribute (title/tooltip)
+            document.querySelectorAll('[data-i18n-title]').forEach(el => {
+                const key = el.getAttribute('data-i18n-title');
+                el.title = t(key);
+            });
+
+            // Translate elements with data-i18n-placeholder attribute (for inputs)
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                el.placeholder = t(key);
+            });
+
+            // Translate data-placeholder attributes (for contenteditable)
+            document.querySelectorAll('[data-i18n-data-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-data-placeholder');
+                el.setAttribute('data-placeholder', t(key));
+            });
+
+            // Update play button title based on current state
+            updatePlayState();
+
+            // Update connection status title
+            const connectionStatus = document.getElementById('connection-status');
+            if (connectionStatus) {
+                connectionStatus.title = isConnected ? t('connection_connected') : t('connection_disconnected');
+            }
+
+            // Update the language selector to show current language
+            const languageSelect = document.getElementById('language-select');
+            if (languageSelect) {
+                languageSelect.value = currentLang;
+            }
+        }
+
+        // Change language and persist preference
+        function setLanguage(lang) {
+            if (translations[lang]) {
+                currentLang = lang;
+                localStorage.setItem('teleprompter_language', lang);
+                applyTranslations();
+            }
+        }
+
+        // Initialize
+        function generateInstructionsQr() {
+            const container = document.getElementById('instructions-qr-container');
+            if (!container) return;
+
+            Promise.resolve()
+                .then(() => {
+                    const url = window.location.origin + window.API_BASE + '/remote';
+                    if (typeof qrcode !== 'undefined') {
+                        const qr = qrcode(0, 'M');
+                        qr.addData(url);
+                        qr.make();
+                        container.innerHTML = qr.createImgTag(4, 0);
+                    }
+                    setupRoomIdCopy();
+                });
+        }
+
+        function setupRoomIdCopy() {
+            const wrapper = document.getElementById('instructions-room-id');
+            const slugEl = document.getElementById('instructions-room-id-slug');
+            const feedback = document.getElementById('instructions-room-id-feedback');
+            if (!wrapper || !slugEl) return;
+
+            const slug = (window.API_BASE || '').replace(/^\//, '') || '/';
+            const shareUrl = window.location.origin + window.API_BASE;
+            slugEl.textContent = slug;
+
+            let feedbackTimer = null;
+            const showCopied = () => {
+                wrapper.classList.add('copied');
+                if (feedback) feedback.classList.add('visible');
+                if (feedbackTimer) clearTimeout(feedbackTimer);
+                feedbackTimer = setTimeout(() => {
+                    wrapper.classList.remove('copied');
+                    if (feedback) feedback.classList.remove('visible');
+                }, 1800);
+            };
+
+            const copyUrl = async () => {
+                try {
+                    if (navigator.clipboard && window.isSecureContext) {
+                        await navigator.clipboard.writeText(shareUrl);
+                    } else {
+                        const ta = document.createElement('textarea');
+                        ta.value = shareUrl;
+                        ta.style.position = 'fixed';
+                        ta.style.opacity = '0';
+                        document.body.appendChild(ta);
+                        ta.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(ta);
+                    }
+                    showCopied();
+                } catch (err) {
+                    console.error('Copy failed:', err);
+                }
+            };
+
+            wrapper.addEventListener('click', copyUrl);
+            wrapper.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    copyUrl();
+                }
+            });
+        }
+
+        function init() {
+            // Check URL params for permanent HUD mode and DPI scale
+            const urlParams = getUrlParams();
+            permanentHud = urlParams.hud;
+            dpiScale = urlParams.scale;
+            mirrorMode = urlParams.mirror;
+            adminMode = urlParams.admin;
+
+            // Show admin section in settings if ?admin=1
+            if (adminMode) {
+                const adminEl = document.getElementById('admin-section');
+                if (adminEl) adminEl.style.display = 'block';
+                // Poll pedal stats every second
+                pollPedalStatus();
+                adminPollTimer = setInterval(pollPedalStatus, 1000);
+            }
+
+            updateViewportScale();
+            window.addEventListener('resize', updateViewportScale);
+
+            loadFromLocalStorage();
+            updateDisplay();
+            updateSettings();
+            updatePlayState();
+
+            // Apply translations after DOM is ready
+            applyTranslations();
+
+            // Generate QR code for instructions panel
+            generateInstructionsQr();
+
+            // Language selector event listener
+            const languageSelect = document.getElementById('language-select');
+            if (languageSelect) {
+                languageSelect.value = currentLang;
+                languageSelect.addEventListener('change', (e) => {
+                    setLanguage(e.target.value);
+                });
+            }
+
+            requestAnimationFrame(animationLoop);
+
+            // Show controls on startup (unless permanently hidden)
+            if (permanentHud === false) {
+                elements.controls.classList.add('hud-hidden');
+                elements.controls.classList.remove('visible');
+            } else {
+                showControls();
+            }
+
+            // Try to connect to SSE server
+            client.connect();
+        }
+
+        init();
+    </script>
+</body>
+</html>
